@@ -1,6 +1,6 @@
 package com.cultofboobles.utils;
 
-public class BodyAnimationParts {
+public class StaticMacros {
 
 
     public static final String idle = "idle";
