@@ -1,22 +1,48 @@
 package com.cultofboobles;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.cultofboobles.view.ViewStuffHandler;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
+
+    private final Game agame;
+
+
+    private ViewStuffHandler viewStuffHandler;
+    private Stage stage;
+
+    public FirstScreen(Game agame) {
+        this.agame = agame;
+    }
+
     @Override
     public void show() {
         // Prepare your screen here.
+        viewStuffHandler = new ViewStuffHandler();
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+
+
     }
 
     @Override
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
+        Main.timeElapsed += delta;
+
+
     }
 
     @Override
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
+        viewStuffHandler.resize(width, height);
+        stage.getViewport().update(width, height, true);
+
     }
 
     @Override
