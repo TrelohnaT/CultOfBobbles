@@ -22,7 +22,7 @@ public class ViewStuffHandler {
         viewPortX = Gdx.graphics.getWidth();
         viewPortY = Gdx.graphics.getHeight();
         camera = new OrthographicCamera(viewPortX, viewPortY);
-        camera.zoom = 2;
+        //camera.zoom = 2;
         viewport = new ExtendViewport(viewPortX, viewPortY, camera);
 
         actualViewPort = new Rectangle(

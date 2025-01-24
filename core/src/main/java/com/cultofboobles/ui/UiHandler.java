@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -47,7 +48,7 @@ public class UiHandler {
         for(TextButton button : this.textButtonMap.values()) {
             bottomHotBar.add(button);
         }
-
+        //root.addListener(new TextTooltip("alkvnalkdsnv", skin));
         root.add(bottomHotBar).expandY().bottom();
 
         return root;

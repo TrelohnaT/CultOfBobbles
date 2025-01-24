@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.cultofboobles.entity.Entity;
 import com.cultofboobles.entity.Player;
+import com.cultofboobles.obstacle.Bed;
+import com.cultofboobles.obstacle.Obstacle;
 import com.cultofboobles.ui.UiHandler;
 import com.cultofboobles.utils.HitBox;
 import com.cultofboobles.view.ViewStuffHandler;
@@ -29,7 +31,7 @@ public class FirstScreen implements Screen {
     private ShapeRenderer sr;
 
     private final Map<String, Entity> entityMap = new HashMap<>();
-
+    private final Map<String, Obstacle> obstacleMap = new HashMap<>();
 
     private ViewStuffHandler viewStuffHandler;
     private UiHandler uiHandler;
@@ -54,7 +56,18 @@ public class FirstScreen implements Screen {
         // to see borders of UI elements
         //stage.setDebugAll(true);
 
-        prepareEntites();
+        prepareEntities();
+
+        obstacleMap.put(
+            "bed1",
+            new Bed(
+                "bed1",
+                70,
+                70,
+                64,
+                128
+                )
+        );
 
     }
 
@@ -75,6 +88,8 @@ public class FirstScreen implements Screen {
         if(!viewStuffHandler.getActualViewPort().contains(player.getHitBox())) {
             player.hitObstacle();
         }
+
+        checkCollisions(player);
 
         drawHitBoxes();
 
@@ -108,7 +123,7 @@ public class FirstScreen implements Screen {
         // Destroy screen's assets here.
     }
 
-    private void prepareEntites() {
+    private void prepareEntities() {
 
         this.entityMap.put(
             "player",
@@ -116,7 +131,9 @@ public class FirstScreen implements Screen {
                 "player",
                 "",
                 Gdx.graphics.getWidth()/2,
-                Gdx.graphics.getHeight()/2
+                Gdx.graphics.getHeight()/2,
+                64,
+                64
             )
         );
 
@@ -146,19 +163,48 @@ public class FirstScreen implements Screen {
             sr.rect(tmp.x, tmp.y, tmp.width, tmp.height);
         }
 
-        sr.setColor(new Color(0, 0, 0, 0));
-        sr.rect(
-            viewStuffHandler.getActualViewPort().x,
-            viewStuffHandler.getActualViewPort().y,
-            viewStuffHandler.getActualViewPort().width,
-            viewStuffHandler.getActualViewPort().height
-        );
+        drawRectangle(viewStuffHandler.getActualViewPort(), new Color(0, 0, 0, 0));
+
+        obstacleMap.forEach((key, value) -> {
+            drawHitBox(value.getHitbox(HitBox.types.EnterAble));
+            drawHitBox(value.getHitbox(HitBox.types.UnEnterAble));
+
+        });
+
 
         sr.end();
 
     }
 
-    private void checkCollisions() {
+    private void drawHitBox(HitBox hitBox) {
+        if(HitBox.types.UnEnterAble.equals(hitBox.type)) {
+            drawRectangle(hitBox.rectangle, new Color(1,0,0,0));
+        }
+        else if(HitBox.types.EnterAble.equals(hitBox.type)) {
+            drawRectangle(hitBox.rectangle, new Color(0,1,0,0));
+        }
+
+    }
+
+    private void drawRectangle(Rectangle rectangle, Color color) {
+        sr.setColor(color);
+        sr.rect(
+            rectangle.x,
+            rectangle.y,
+            rectangle.width,
+            rectangle.height
+        );
+
+    }
+
+    private void checkCollisions(Entity player) {
+
+        obstacleMap.forEach((id, value) -> {
+            if(value.getHitbox(HitBox.types.UnEnterAble).rectangle.overlaps(player.getHitBox())) {
+
+                player.hitObstacle();
+            }
+        });
 
     }
 

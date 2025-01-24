@@ -31,14 +31,16 @@ public class Player implements Entity {
         String id,
         String atlasPath,
         float x,
-        float y
+        float y,
+        float sizeX,
+        float sizeY
     ) {
         this.id = id;
         this.atlasPath = atlasPath;
         this.x = x;
         this.y = y;
-        this.sizeX = 128;//tmp.getWidth(); //ToDo this might make some issues
-        this.sizeY = 128;//tmp.getHeight();
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
         this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY);
 
     }
