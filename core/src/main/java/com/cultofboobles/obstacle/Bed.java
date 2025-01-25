@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.entity.Customer;
 import com.cultofboobles.entity.Entity;
 import com.cultofboobles.entity.Player;
+import com.cultofboobles.utils.AtlasHandler;
 import com.cultofboobles.utils.HitBox;
 
 import java.util.HashMap;
@@ -121,15 +122,16 @@ public class Bed implements Obstacle {
 
     @Override
     public Optional<Sprite> getOverLay() {
+        if(this.empty) {
+            return Optional.of(new Sprite(AtlasHandler.obstacle.findRegion("Empty")));
+        }
+
         if (this.customer != null) {
             Sprite tmp = customer.getOverlayBasedOnCleanProgress();
             tmp.translate(x, y);
             return Optional.of(tmp);
         }
 
-        if(this.empty) {
-            return Optional.empty();
-        }
 
         return Optional.empty();
     }
