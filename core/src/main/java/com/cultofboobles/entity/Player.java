@@ -25,11 +25,11 @@ public class Player implements Entity {
     private final float speed = 250f;
 
 
-    private final String atlasPath;
     private final TextureAtlas atlas;
 
     private final Rectangle hitBox;
 
+    private final Animation<TextureRegion> walkFront;
     private final Animation<TextureRegion> idleFront;
     private final Animation<TextureRegion> idleBack;
 
@@ -39,6 +39,7 @@ public class Player implements Entity {
     private final float animationSpeed = 1/5f;
 
     private toolTypeEnum toolType = toolTypeEnum.None;
+    private currentAnimationEnum currentAnimation = currentAnimationEnum.Idle;
 
     public Player(
         String id,
@@ -49,7 +50,6 @@ public class Player implements Entity {
         float sizeY
     ) {
         this.id = id;
-        this.atlasPath = atlasPath;
         this.x = x;
         this.y = y;
         this.sizeX = sizeX;
@@ -57,8 +57,10 @@ public class Player implements Entity {
         this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY);
         this.atlas = new TextureAtlas(atlasPath);
 
+        this.walkFront = new Animation<>(animationSpeed/4, atlas.findRegions("MainCharacter_WalkFront"));
         this.idleFront = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_IdleFront"));
         this.idleBack = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_IdleBack"));
+
 
     }
 
@@ -78,21 +80,25 @@ public class Player implements Entity {
         } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             this.y += this.speed * deltaTime * (-1);
             isFacingBack = false;
+            currentAnimation = currentAnimationEnum.Walk;
             idle = false;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.x += this.speed * deltaTime * (-1);
             idle = false;
+            currentAnimation = currentAnimationEnum.Walk;
             isFacingLeft = true;
         } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             this.x += this.speed * deltaTime;
             idle = false;
+            currentAnimation = currentAnimationEnum.Walk;
             isFacingLeft = false;
         }
 
         // if no movement, switch to idle animation
         if (idle) {
+            currentAnimation = currentAnimationEnum.Idle;
         } else {
             // move hitBox
             this.hitBox.setPosition(this.x - this.sizeX / 2, this.y - this.sizeY / 2);
@@ -114,9 +120,13 @@ public class Player implements Entity {
     public Sprite getSprite() {
         Sprite tmp;
         if(isFacingBack) {
-            tmp = new Sprite(idleBack.getKeyFrame(Main.timeElapsed, true));
+                tmp = new Sprite(idleBack.getKeyFrame(Main.timeElapsed, true));
         } else {
-            tmp = new Sprite(idleFront.getKeyFrame(Main.timeElapsed, true));
+            if(currentAnimation.equals(currentAnimationEnum.Idle)) {
+                tmp = new Sprite(idleFront.getKeyFrame(Main.timeElapsed, true));
+            } else {
+                tmp = new Sprite(walkFront.getKeyFrame(Main.timeElapsed, true));
+            }
         }
         if(!isFacingLeft) {
             tmp.flip(true, false);
@@ -187,4 +197,10 @@ public class Player implements Entity {
         None,
         Clean
     }
+
+    public enum currentAnimationEnum {
+        Idle,
+        Walk
+    }
+
 }

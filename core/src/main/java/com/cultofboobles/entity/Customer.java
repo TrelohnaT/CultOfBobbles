@@ -1,7 +1,9 @@
 package com.cultofboobles.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.Main;
 import com.cultofboobles.obstacle.Bed;
@@ -191,14 +193,21 @@ public class Customer implements Entity {
     }
 
     public boolean increaseCleanProgress() {
-        this.cleaningProgress += 0.5f;
-        System.out.println(this.id + " - " + this.cleaningProgress);
-        return this.cleaningProgress >= 100;
+
+        if((this.cleaningProgress + 0.5f) < 100) {
+            this.cleaningProgress += 0.5f;
+        }
+        //return Optional.of(new Sprite(AtlasHandler.obstacle.findRegions("Bubbles").get((int) this.cleaningProgress / 10)));
+        return amICleaned();
 
     }
 
+    public Sprite getOverlayBasedOnCleanProgress() {
+        return new Sprite(AtlasHandler.obstacle.findRegions("Bubbles").get((int) this.cleaningProgress / 10));
+    }
+
     private boolean amICleaned() {
-        return this.cleaningProgress >= 100;
+        return this.cleaningProgress >= 90;
     }
 
     public enum visitStates {
