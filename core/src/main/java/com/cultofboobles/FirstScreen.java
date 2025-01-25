@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -16,6 +17,7 @@ import com.cultofboobles.obstacle.ObstacleFactory;
 import com.cultofboobles.ui.UiHandler;
 import com.cultofboobles.utils.day.Day;
 import com.cultofboobles.utils.HitBox;
+import com.cultofboobles.utils.day.DayGenerator;
 import com.cultofboobles.view.ViewStuffHandler;
 
 import java.util.HashMap;
@@ -29,6 +31,8 @@ public class FirstScreen implements Screen {
     private final Game agame;
     private final Day day;
 
+    private BitmapFont font;
+
     private SpriteBatch spriteBatch;
     private ShapeRenderer sr;
 
@@ -39,10 +43,14 @@ public class FirstScreen implements Screen {
     private UiHandler uiHandler;
     private Stage stage;
 
+    private float dayStart = 0;
+    private int dayTimeLeft= 10;
 
     public FirstScreen(Game agame, Day day) {
         this.agame = agame;
         this.day = day;
+
+        font = new BitmapFont();
     }
 
     @Override
@@ -66,22 +74,34 @@ public class FirstScreen implements Screen {
             "bed1",
             ObstacleFactory.makeBed(
                 "bed1",
-                70,
-                70
+                170,
+                350
             )
 
         );
 
+        obstacleMap.put(
+            "bed2",
+            ObstacleFactory.makeBed(
+                "bed2",
+                170,
+                150
+            )
+        );
+
+        dayStart = Main.timeElapsed;
     }
 
     @Override
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
         Main.timeElapsed += delta;
+        dayTimeLeft = (int) (day.duration - (Main.timeElapsed - dayStart));
+        if(dayTimeLeft < 0) {
+            agame.setScreen(new SecondScreen(agame));
+        }
+
         Entity player = entityMap.get("player");
-
-
-
         handleViewPort();
 
         drawUi();
@@ -145,8 +165,10 @@ public class FirstScreen implements Screen {
             "customer",
             EntityFactory.makeCustomer(
                 "customer",
+                "bed1",
                 Gdx.graphics.getWidth() / 2,
-                Gdx.graphics.getHeight() - 100)
+                Gdx.graphics.getHeight() - 100
+            )
 
 
         );
@@ -170,6 +192,9 @@ public class FirstScreen implements Screen {
     private void drawUi() {
         //stage.act(Gdx.graphics.getDeltaTime());
         //stage.draw();
+
+
+
     }
 
     private void drawHitBoxes() {
@@ -220,6 +245,8 @@ public class FirstScreen implements Screen {
         entityMap.get("player").getSprite().draw(spriteBatch);
 
         obstacleMap.values().forEach(v -> v.getSprite().draw(spriteBatch));
+
+        font.draw(spriteBatch, "day time left: " + dayTimeLeft, 100, 100);
 
         spriteBatch.end();
     }

@@ -2,6 +2,8 @@ package com.cultofboobles.utils.day;
 
 public class Day {
 
+    public int duration = 20;
+
     public int customerMaxCount;
 
     public String orderForDay;

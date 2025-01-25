@@ -18,10 +18,10 @@ public class Customer implements Entity {
 
     private final float speed = 100;
 
-    private String targetId = "bed1";
+    private String targetId;
 
-    private float targetX = 70;
-    private float targetY = 70;
+    private float targetX = 170;
+    private float targetY = 270;
 
     public Customer(
         String id,
@@ -29,13 +29,14 @@ public class Customer implements Entity {
         float x,
         float y,
         float sizeX,
-        float sizeY
+        float sizeY,
+        String targetId
     ) {
         this.id = id;
         this.atlasPath = atlasPath;
         this.x = x;
         this.y = y;
-
+        this.targetId = targetId;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY);
