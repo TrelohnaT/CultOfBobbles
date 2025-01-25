@@ -2,6 +2,9 @@ package com.cultofboobles.obstacle;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.cultofboobles.entity.Customer;
+import com.cultofboobles.entity.Entity;
+import com.cultofboobles.entity.Player;
 import com.cultofboobles.utils.HitBox;
 
 import java.util.HashMap;
@@ -16,6 +19,8 @@ public class Bed implements Obstacle {
     private final Sprite sprite;
 
     private boolean empty = true;
+
+    private Customer customer;
 
     Map<HitBox.types, HitBox> hitBoxMap = new HashMap<>();
 
@@ -81,6 +86,24 @@ public class Bed implements Obstacle {
     @Override
     public HitBox getHitbox(HitBox.types type) {
         return hitBoxMap.get(type);
+    }
+
+    @Override
+    public void interact(Entity entity) {
+        if(entity instanceof Customer) {
+            if(entity.interactBed(this)) {
+                System.out.println(this.id + " has " + entity.getId());
+                this.customer = (Customer) entity;
+            }
+        }
+
+        if(entity instanceof Player) {
+            System.out.println(this.id + " player detected");
+
+
+        }
+
+
     }
 
     public void setEmpty(boolean value) {

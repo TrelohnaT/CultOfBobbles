@@ -1,0 +1,9 @@
+customer.png
+size:256,128
+repeat:none
+CustomerGinger_Lying
+bounds:2,2,64,96
+CustomerGinger_WalkBack
+bounds:68,34,32,64
+CustomerGinger_WalkFront
+bounds:102,34,32,64

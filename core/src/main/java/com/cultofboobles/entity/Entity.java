@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.obstacle.Bed;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Entity {
     String getId();
@@ -18,6 +19,8 @@ public interface Entity {
 
     Sprite getSprite();
 
+    Optional<ToolTypeData> getToolType();
+
     Rectangle getHitBox();
 
     /**
@@ -25,7 +28,7 @@ public interface Entity {
      */
     void hitObstacle(String obstacleId);
 
-    void interactBed(Bed bed);
+    boolean interactBed(Bed bed);
 
     void update();
 

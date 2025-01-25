@@ -13,13 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.cultofboobles.entity.Customer;
 import com.cultofboobles.entity.Entity;
 import com.cultofboobles.entity.EntityFactory;
+import com.cultofboobles.entity.Player;
 import com.cultofboobles.obstacle.Bed;
 import com.cultofboobles.obstacle.Obstacle;
 import com.cultofboobles.obstacle.ObstacleFactory;
 import com.cultofboobles.ui.UiHandler;
+import com.cultofboobles.utils.HitBox;
 import com.cultofboobles.utils.Utils;
 import com.cultofboobles.utils.day.Day;
-import com.cultofboobles.utils.HitBox;
 import com.cultofboobles.view.ViewStuffHandler;
 
 import java.util.*;
@@ -45,7 +46,7 @@ public class FirstScreen implements Screen {
     private Stage stage;
 
     private float dayStart = 0;
-    private int dayTimeLeft= 10;
+    private int dayTimeLeft = 10;
 
     private List<String> doomedList = new LinkedList<>();
 
@@ -100,7 +101,7 @@ public class FirstScreen implements Screen {
         // Draw your screen here. "delta" is the time since last render in seconds.
         Main.timeElapsed += delta;
         dayTimeLeft = (int) (day.duration - (Main.timeElapsed - dayStart));
-        if(dayTimeLeft < 0) {
+        if (dayTimeLeft < 0) {
             agame.setScreen(new SecondScreen(agame));
         }
 
@@ -118,19 +119,19 @@ public class FirstScreen implements Screen {
 
         customerSpawner();
 
-        checkCollisions(player);
+        checkCollisions((Player) player);
 
         drawAll();
 
         drawHitBoxes();
 
-        for(Entity entity : this.entityMap.values()) {
-            if(entity.isDoomed()) {
+        for (Entity entity : this.entityMap.values()) {
+            if (entity.isDoomed()) {
                 doomedList.add(entity.getId());
             }
         }
 
-        for(String doomedId : doomedList) {
+        for (String doomedId : doomedList) {
             entityMap.remove(doomedId);
         }
         doomedList.clear();
@@ -181,15 +182,15 @@ public class FirstScreen implements Screen {
 
     private void customerSpawner() {
 
-        if(Main.timeElapsed - EntityFactory.lastSpawnedCustomer < Utils.getRandom(2, 10)) {
+        if (Main.timeElapsed - EntityFactory.lastSpawnedCustomer < Utils.getRandom(2, 10)) {
             return;
         }
 
         // find empty bed
         Optional<Bed> emptyBed = Optional.empty();
         List<Bed> bedList = getBedList();
-        for(Bed bed : bedList) {
-            if(bed.isEmpty()) {
+        for (Bed bed : bedList) {
+            if (bed.isEmpty()) {
                 emptyBed = Optional.of(bed);
                 break;
             }
@@ -197,7 +198,7 @@ public class FirstScreen implements Screen {
 
         // if empty bed exists and new customer may be spawned
         // add empty bed as destination and mark the bed as no longer empty
-        if(emptyBed.isPresent() && EntityFactory.customerCount < day.customerMaxCount) {
+        if (emptyBed.isPresent() && EntityFactory.customerCount < day.customerMaxCount) {
             EntityFactory.lastSpawnedCustomer = Main.timeElapsed;
             emptyBed.get().setEmpty(false);
             String customerId = "customer_" + EntityFactory.customerCount;
@@ -225,15 +226,14 @@ public class FirstScreen implements Screen {
         spriteBatch.setProjectionMatrix(viewStuffHandler.getViewport().getCamera().combined);
 
         viewStuffHandler.moveCamera(
-            (float) Gdx.graphics.getWidth() /2 + 0.5f,
-            (float) Gdx.graphics.getHeight() /2 + 0.5f
+            (float) Gdx.graphics.getWidth() / 2 + 0.5f,
+            (float) Gdx.graphics.getHeight() / 2 + 0.5f
         );
     }
 
     private void drawUi() {
         //stage.act(Gdx.graphics.getDeltaTime());
         //stage.draw();
-
 
 
     }
@@ -283,22 +283,40 @@ public class FirstScreen implements Screen {
         spriteBatch.begin();
         viewStuffHandler.background.draw(spriteBatch);
 
-        entityMap.get("player").getSprite().draw(spriteBatch);
+        //entityMap.get("player").getSprite().draw(spriteBatch);
+
 
         obstacleMap.values().forEach(v -> v.getSprite().draw(spriteBatch));
 
-        font.draw(spriteBatch, "day time left: " + dayTimeLeft, 100, 100);
-        font.draw(spriteBatch, "today order: " + day.orderForDay, 100, 120);
+        entityMap.values().forEach(v -> {
+            v.getSprite().draw(spriteBatch);
+
+            v.getToolType().ifPresent(
+                toolTypeData -> font.draw(
+                    spriteBatch, toolTypeData.msg,
+                    toolTypeData.x,
+                    toolTypeData.y
+                )
+            );
+
+        });
+
+        font.draw(spriteBatch, "day time left: " + dayTimeLeft, 100, 80);
+        font.draw(spriteBatch, "today order: " + day.orderForDay, 100, 100);
+        font.draw(spriteBatch, "Day: " + day.count, 100, 120);
 
         spriteBatch.end();
     }
 
-    private void checkCollisions(Entity player) {
+    private void checkCollisions(Player player) {
 
         obstacleMap.forEach((id, value) -> {
             if (value.getHitbox(HitBox.types.UnEnterAble).rectangle.overlaps(player.getHitBox())) {
                 player.hitObstacle(value.getId());
+
             }
+
+
         });
 
         entityMap.forEach((idEntity, entity) -> {
@@ -307,7 +325,12 @@ public class FirstScreen implements Screen {
                     entity.hitObstacle(idObstacle);
                 } else if (entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.EnterAble).rectangle)) {
                     // ToDo add type check
-                    entity.interactBed((Bed) obstacle);
+                    //entity.interactBed((Bed) obstacle);
+                    obstacle.interact(entity);
+                    if(obstacle instanceof Bed && entity instanceof Player) {
+                        Player a = (Player) entity;
+                        a.setToolType(Player.toolTypeEnum.Clean);
+                    }
 
                 }
             });
@@ -318,7 +341,7 @@ public class FirstScreen implements Screen {
 
     private List<Bed> getBedList() {
         List<Bed> tmp = new LinkedList<>();
-        for(Map.Entry<String, Obstacle> entry : obstacleMap.entrySet()) {
+        for (Map.Entry<String, Obstacle> entry : obstacleMap.entrySet()) {
             if (entry.getValue() instanceof Bed) {
                 tmp.add((Bed) entry.getValue());
             }
@@ -328,7 +351,7 @@ public class FirstScreen implements Screen {
 
     private List<Customer> getCunstomerList() {
         List<Customer> tmp = new LinkedList<>();
-        for(Map.Entry<String, Entity> entry : entityMap.entrySet()) {
+        for (Map.Entry<String, Entity> entry : entityMap.entrySet()) {
             if (entry.getValue() instanceof Customer) {
                 tmp.add((Customer) entry.getValue());
             }

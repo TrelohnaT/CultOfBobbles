@@ -5,14 +5,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.Main;
 import com.cultofboobles.obstacle.Bed;
+import com.cultofboobles.utils.AtlasHandler;
 import com.cultofboobles.utils.Utils;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Customer implements Entity {
 
     private final String id;
-    private final String atlasPath;
     private float x;
     private float y;
     private final float sizeX;
@@ -22,6 +23,7 @@ public class Customer implements Entity {
     private final float speed = 100;
 
     private String targetId;
+    private Bed bed;
 
     private float beforeBedX = 0;
     private float beforeBedY = 0;
@@ -34,10 +36,8 @@ public class Customer implements Entity {
 
     private boolean doomed = false;
 
-
     public Customer(
         String id,
-        String atlasPath,
         float x,
         float y,
         float sizeX,
@@ -45,7 +45,6 @@ public class Customer implements Entity {
         String targetId
     ) {
         this.id = id;
-        this.atlasPath = atlasPath;
         this.x = x;
         this.y = y;
         this.targetId = targetId;
@@ -78,7 +77,25 @@ public class Customer implements Entity {
 
     @Override
     public Sprite getSprite() {
-        return null;
+        Sprite tmp;
+        if (state.equals(visitStates.Leaving)) {
+            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_WalkBack"));;
+        } else if (state.equals(visitStates.InBed)) {
+            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_Lying"));;
+        } else {
+            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_WalkFront"));;
+        }
+
+        tmp.translateX(this.x);// - tmp.getWidth() / 2);
+        tmp.translateY(this.y);// - tmp.getHeight() / 2);
+
+        return tmp;
+
+    }
+
+    @Override
+    public Optional<ToolTypeData> getToolType() {
+        return Optional.empty();
     }
 
     @Override
@@ -92,14 +109,13 @@ public class Customer implements Entity {
     }
 
     @Override
-    public void interactBed(Bed bed) {
-
-        if(state.equals(visitStates.Leaving)) {
-            return;
+    public boolean interactBed(Bed bed) {
+        if (state.equals(visitStates.Leaving)) {
+            return false;
         }
 
         if (targetId.equals(bed.getId())) {
-            System.out.println("bed reached: " + bed.getId());
+            this.bed = bed;
             this.state = visitStates.InBed;
 
             this.timeEnteringBed = Main.timeElapsed;
@@ -109,8 +125,10 @@ public class Customer implements Entity {
 
             this.x = bed.getX();
             this.y = bed.getY();
-
+            return true;
         }
+
+        return false;
     }
 
     @Override
@@ -122,8 +140,9 @@ public class Customer implements Entity {
                 this.x -= speed * Gdx.graphics.getDeltaTime();
             }
         } else if (state.equals(visitStates.InBed)) {
-            if(Main.timeElapsed - this.timeEnteringBed > Utils.getRandom(3, 5)) {
+            if (Main.timeElapsed - this.timeEnteringBed > Utils.getRandom(5, 15)) {
                 state = visitStates.Leaving;
+                this.bed.setEmpty(true);
                 this.x = this.beforeBedX + 5;
                 this.y = this.beforeBedY;
             }

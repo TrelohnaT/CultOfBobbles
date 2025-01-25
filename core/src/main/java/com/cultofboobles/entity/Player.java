@@ -2,15 +2,13 @@ package com.cultofboobles.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.Main;
 import com.cultofboobles.obstacle.Bed;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Player implements Entity {
 
@@ -40,6 +38,8 @@ public class Player implements Entity {
 
     private final float animationSpeed = 1/5f;
 
+    private toolTypeEnum toolType = toolTypeEnum.None;
+
     public Player(
         String id,
         String atlasPath,
@@ -63,6 +63,8 @@ public class Player implements Entity {
     }
 
     public void update() {
+
+        this.toolType = toolTypeEnum.None;
 
         this.previousX = x;
         this.previousY = y;
@@ -127,6 +129,14 @@ public class Player implements Entity {
     }
 
     @Override
+    public Optional<ToolTypeData> getToolType() {
+        if(toolType.equals(toolTypeEnum.Clean)) {
+             return Optional.of(new ToolTypeData("E", this.x - 5, this.y + getHitBox().height - 10));
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Rectangle getHitBox() {
         return this.hitBox;
     }
@@ -138,8 +148,8 @@ public class Player implements Entity {
     }
 
     @Override
-    public void interactBed(Bed bed) {
-
+    public boolean interactBed(Bed bed) {
+        return false;
     }
 
     @Override
@@ -166,5 +176,15 @@ public class Player implements Entity {
     @Override
     public void clear() {
         this.atlas.dispose();
+    }
+
+
+    public void setToolType(toolTypeEnum type) {
+        this.toolType = type;
+    }
+
+    public enum toolTypeEnum {
+        None,
+        Clean
     }
 }

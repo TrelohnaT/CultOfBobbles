@@ -9,7 +9,6 @@ public class EntityFactory {
         customerCount++;
         return new Customer(
             id,
-            "",
             x,
             y,
             32,
