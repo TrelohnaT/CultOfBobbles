@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.Main;
 import com.cultofboobles.obstacle.Bed;
 import com.cultofboobles.utils.AtlasHandler;
+import com.cultofboobles.utils.Ecomonics;
 import com.cultofboobles.utils.Utils;
 
 import java.util.List;
@@ -97,6 +98,25 @@ public class Customer implements Entity {
 
     }
 
+    public Sprite getMoodIcon() {
+        Sprite tmp;
+        if(mood.equals(happinessStates.Happy)) {
+            tmp = new Sprite(AtlasHandler.customer.findRegion("SmileyFace"));
+            tmp.translateX(this.x + 8);
+            tmp.translateY(this.y  + 55);
+
+        } else if(mood.equals(happinessStates.UnHappy)) {
+            tmp = new Sprite(AtlasHandler.customer.findRegion("FrownFace"));
+            tmp.translateX(this.x + 8);
+            tmp.translateY(this.y  + 55);
+
+        } else {
+            tmp = null;
+        }
+
+        return tmp;
+    }
+
     @Override
     public Optional<ToolTypeData> getToolType() {
         return Optional.empty();
@@ -153,6 +173,9 @@ public class Customer implements Entity {
 
                 if(amICleaned()) {
                     this.mood = happinessStates.Happy;
+                        Main.ecomonics.addToMoney(10);
+                        Main.ecomonics.addSoap(-5);
+
                     System.out.println(this.id + " is happy");
                 } else {
                     this.mood = happinessStates.UnHappy;

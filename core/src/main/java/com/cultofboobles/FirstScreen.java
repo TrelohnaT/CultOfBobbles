@@ -300,6 +300,20 @@ public class FirstScreen implements Screen {
                 )
             );
 
+            if(v instanceof Customer) {
+                Customer customer = (Customer) v;
+
+                Sprite a = customer.getMoodIcon();
+
+                if(a != null) {
+
+                    a.draw(spriteBatch);
+
+                }
+
+            }
+
+
         });
 
 

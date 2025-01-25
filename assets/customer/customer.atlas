@@ -2,8 +2,14 @@ customer.png
 size:256,128
 repeat:none
 CustomerGinger_Lying
-bounds:2,2,64,96
+bounds:2,20,64,96
 CustomerGinger_WalkBack
-bounds:68,34,32,64
+bounds:68,52,32,64
 CustomerGinger_WalkFront
-bounds:102,34,32,64
+bounds:102,52,32,64
+FrownFace
+bounds:68,34,16,16
+NeutralFace
+bounds:136,100,16,16
+SmileyFace
+bounds:2,2,16,16

@@ -16,9 +16,9 @@ public class Main extends Game {
 
     @Override
     public void create() {
+        ecomonics = new Ecomonics();
         atlasHandler  = new AtlasHandler();
         setScreen(new SecondScreen(this));
-        ecomonics = new Ecomonics();
         //setScreen(new FirstScreen(this));
     }
 }
