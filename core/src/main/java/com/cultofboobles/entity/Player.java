@@ -3,12 +3,12 @@ package com.cultofboobles.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.List;
 
 public class Player implements Entity {
-
 
 
     private String id = "";
@@ -24,6 +24,7 @@ public class Player implements Entity {
 
 
     private final String atlasPath;
+    private final TextureAtlas atlas;
 
     private final Rectangle hitBox;
 
@@ -42,7 +43,7 @@ public class Player implements Entity {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY);
-
+        this.atlas = new TextureAtlas(atlasPath);
     }
 
     public void update() {
@@ -83,14 +84,28 @@ public class Player implements Entity {
     }
 
     @Override
+    public Sprite getSprite() {
+        Sprite tmp = new Sprite(this.atlas.findRegion("MainCharacter_Idle1"));
+
+        tmp.translateX(x - tmp.getWidth() / 2);
+        tmp.translateY(y - tmp.getHeight() / 2);
+        return tmp;
+    }
+
+    @Override
     public Rectangle getHitBox() {
         return this.hitBox;
     }
 
     @Override
-    public void hitObstacle() {
+    public void hitObstacle(String obstacleId) {
         this.x = previousX;
         this.y = previousY;
+    }
+
+    @Override
+    public void interact(String obstacleId) {
+
     }
 
     @Override
@@ -116,5 +131,6 @@ public class Player implements Entity {
 
     @Override
     public void clear() {
+        this.atlas.dispose();
     }
 }
