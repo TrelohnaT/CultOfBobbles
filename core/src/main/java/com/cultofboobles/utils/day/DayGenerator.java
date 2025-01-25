@@ -1,5 +1,7 @@
 package com.cultofboobles.utils.day;
 
+import com.cultofboobles.utils.Utils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +22,10 @@ public class DayGenerator {
 
     public static Day getDay(int count) {
 
-        int customerCount = 10 + (count * 5);
+        int customerCount = 2 + (count * 5);
         String orderName = "";
         for (int i = 0; i < 100; i++) {
-            int randomNum = (int) (Math.random() * allOrders.size());
+            int randomNum = Utils.getRandom(0, allOrders.size());
 
             orderName = allOrders.get(randomNum);
 

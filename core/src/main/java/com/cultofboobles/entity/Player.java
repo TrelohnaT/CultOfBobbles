@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.Main;
+import com.cultofboobles.obstacle.Bed;
 
 import java.util.List;
 
@@ -97,6 +98,11 @@ public class Player implements Entity {
     }
 
     @Override
+    public boolean isDoomed() {
+        return false;
+    }
+
+    @Override
     public List<Sprite> getSpriteList() {
 
         return List.of();
@@ -116,6 +122,7 @@ public class Player implements Entity {
 
         tmp.translateX(x - tmp.getWidth() / 2);
         tmp.translateY(y - tmp.getHeight() / 2);
+        tmp.setScale(1.3f);
         return tmp;
     }
 
@@ -131,7 +138,7 @@ public class Player implements Entity {
     }
 
     @Override
-    public void interact(String obstacleId) {
+    public void interactBed(Bed bed) {
 
     }
 
