@@ -190,7 +190,7 @@ public class FirstScreen implements Screen {
         Optional<Bed> emptyBed = Optional.empty();
         List<Bed> bedList = getBedList();
         for (Bed bed : bedList) {
-            if (bed.isEmpty()) {
+            if (bed.isFree()) {
                 emptyBed = Optional.of(bed);
                 break;
             }
@@ -200,7 +200,7 @@ public class FirstScreen implements Screen {
         // add empty bed as destination and mark the bed as no longer empty
         if (emptyBed.isPresent() && EntityFactory.customerCount < day.customerMaxCount) {
             EntityFactory.lastSpawnedCustomer = Main.timeElapsed;
-            emptyBed.get().setEmpty(false);
+            emptyBed.get().setFree(false);
             String customerId = "customer_" + EntityFactory.customerCount;
             this.entityMap.put(
                 customerId,

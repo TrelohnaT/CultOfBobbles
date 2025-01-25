@@ -36,6 +36,8 @@ public class Customer implements Entity {
 
     private boolean doomed = false;
 
+    private float cleaningProgress = 0;
+
     public Customer(
         String id,
         float x,
@@ -117,7 +119,7 @@ public class Customer implements Entity {
         if (targetId.equals(bed.getId())) {
             this.bed = bed;
             this.state = visitStates.InBed;
-
+            this.bed.setEmpty(false);
             this.timeEnteringBed = Main.timeElapsed;
 
             this.beforeBedX = this.x;
@@ -143,8 +145,18 @@ public class Customer implements Entity {
             if (Main.timeElapsed - this.timeEnteringBed > Utils.getRandom(5, 15)) {
                 state = visitStates.Leaving;
                 this.bed.setEmpty(true);
+                this.bed.setFree(true);
                 this.x = this.beforeBedX + 5;
                 this.y = this.beforeBedY;
+
+                if(amICleaned()) {
+                    this.mood = happinessStates.Happy;
+                    System.out.println(this.id + " is happy");
+                } else {
+                    this.mood = happinessStates.UnHappy;
+                    System.out.println(this.id + " is unhappy");
+                }
+
             }
 
 
@@ -176,6 +188,17 @@ public class Customer implements Entity {
     @Override
     public void clear() {
 
+    }
+
+    public boolean increaseCleanProgress() {
+        this.cleaningProgress += 0.5f;
+        System.out.println(this.id + " - " + this.cleaningProgress);
+        return this.cleaningProgress >= 100;
+
+    }
+
+    private boolean amICleaned() {
+        return this.cleaningProgress >= 100;
     }
 
     public enum visitStates {

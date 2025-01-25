@@ -1,5 +1,7 @@
 package com.cultofboobles.obstacle;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.entity.Customer;
@@ -19,6 +21,7 @@ public class Bed implements Obstacle {
     private final Sprite sprite;
 
     private boolean empty = true;
+    private boolean free = true;
 
     private Customer customer;
 
@@ -98,12 +101,30 @@ public class Bed implements Obstacle {
         }
 
         if(entity instanceof Player) {
-            System.out.println(this.id + " player detected");
 
+            if(Gdx.input.isKeyPressed(Input.Keys.E)) {
+                if(!this.empty) {
+                    if(customer.increaseCleanProgress()) {
+                        System.out.println("customer cleaned");
+                    } else {
+                        System.out.println("customer cleaning");
+                    }
+                } else {
+                    System.out.println("wait for customer");
+                }
+            }
 
         }
 
 
+    }
+
+    public void setFree(boolean value) {
+        this.free = value;
+    }
+
+    public boolean isFree() {
+        return this.free;
     }
 
     public void setEmpty(boolean value) {
