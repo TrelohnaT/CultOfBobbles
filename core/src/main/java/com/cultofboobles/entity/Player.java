@@ -31,10 +31,13 @@ public class Player implements Entity {
 
     private final Rectangle hitBox;
 
-    private final Animation<TextureRegion> idle;
+    private final Animation<TextureRegion> idleFront;
+    private final Animation<TextureRegion> idleBack;
 
     private boolean isFacingLeft = false;
+    private boolean isFacingBack = false;
 
+    private final float animationSpeed = 1/5f;
 
     public Player(
         String id,
@@ -53,7 +56,9 @@ public class Player implements Entity {
         this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY);
         this.atlas = new TextureAtlas(atlasPath);
 
-        this.idle = new Animation<>(1, atlas.findRegions("MainCharacter_IdleFront"));
+        this.idleFront = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_IdleFront"));
+        this.idleBack = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_IdleBack"));
+
     }
 
     public void update() {
@@ -65,9 +70,11 @@ public class Player implements Entity {
         boolean idle = true;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             this.y += this.speed * deltaTime;
+            isFacingBack = true;
             idle = false;
         } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             this.y += this.speed * deltaTime * (-1);
+            isFacingBack = false;
             idle = false;
         }
 
@@ -97,8 +104,12 @@ public class Player implements Entity {
 
     @Override
     public Sprite getSprite() {
-        Sprite tmp = new Sprite(idle.getKeyFrame(Main.timeElapsed, true));
-
+        Sprite tmp;
+        if(isFacingBack) {
+            tmp = new Sprite(idleBack.getKeyFrame(Main.timeElapsed, true));
+        } else {
+            tmp = new Sprite(idleFront.getKeyFrame(Main.timeElapsed, true));
+        }
         if(!isFacingLeft) {
             tmp.flip(true, false);
         }

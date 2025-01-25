@@ -155,8 +155,8 @@ public class FirstScreen implements Screen {
             "player",
 
             EntityFactory.makePlayer(
-                Gdx.graphics.getWidth() / 2,
-                Gdx.graphics.getHeight() / 2
+                viewStuffHandler.background.getWidth() / 2,
+                viewStuffHandler.background.getHeight() / 2
             )
 
         );
@@ -166,8 +166,8 @@ public class FirstScreen implements Screen {
             EntityFactory.makeCustomer(
                 "customer",
                 "bed1",
-                Gdx.graphics.getWidth() / 2,
-                Gdx.graphics.getHeight() - 100
+                viewStuffHandler.background.getWidth() / 2,
+                viewStuffHandler.background.getHeight() - 100
             )
 
 
