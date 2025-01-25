@@ -64,7 +64,7 @@ public class FirstScreen implements Screen {
         spriteBatch = new SpriteBatch();
         sr = new ShapeRenderer();
 
-        viewStuffHandler = new ViewStuffHandler();
+        viewStuffHandler = new ViewStuffHandler("TempleBottom");
         uiHandler = new UiHandler();
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -220,16 +220,16 @@ public class FirstScreen implements Screen {
 
     private void handleViewPort() {
         // Draw your screen here. "delta" is the time since last render in seconds.
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClearColor(0.25f, 0.25f, 0.25f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         viewStuffHandler.getViewport().getCamera().update();
         viewStuffHandler.getViewport().apply();
         spriteBatch.setProjectionMatrix(viewStuffHandler.getViewport().getCamera().combined);
 
-        viewStuffHandler.moveCamera(
-            (float) Gdx.graphics.getWidth() / 2 + 0.5f,
-            (float) Gdx.graphics.getHeight() / 2 + 0.5f
-        );
+//        viewStuffHandler.moveCamera(
+//            (float) Gdx.graphics.getWidth() / 2 + 0.5f,
+//            (float) Gdx.graphics.getHeight() / 2 + 0.5f
+//        );
     }
 
     private void drawUi() {

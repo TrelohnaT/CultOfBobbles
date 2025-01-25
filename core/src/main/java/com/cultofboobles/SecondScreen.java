@@ -11,8 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.cultofboobles.entity.ToolTypeData;
+import com.cultofboobles.utils.SoundHandler;
 import com.cultofboobles.utils.day.Day;
 import com.cultofboobles.utils.day.DayGenerator;
+import com.cultofboobles.view.ViewStuffHandler;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,10 +22,12 @@ import java.util.List;
 public class SecondScreen implements Screen {
     private final Game agame;
 
+    private ViewStuffHandler viewStuffHandler;
+
     private BitmapFont font;
-    SpriteBatch spriteBatch;
-    Stage stage;
-    Skin skin;
+    private SpriteBatch spriteBatch;
+    private Stage stage;
+    private Skin skin;
 
 
     public SecondScreen(Game agame) {
@@ -34,9 +38,12 @@ public class SecondScreen implements Screen {
 
     @Override
     public void show() {
+        if(SoundHandler.playIntro) {
+            SoundHandler.getIntro().play();
+        }
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         spriteBatch = new SpriteBatch();
-
+        viewStuffHandler = new ViewStuffHandler("TempleTop");
 
 //        stage = new Stage(new ScreenViewport());
 //        Gdx.input.setInputProcessor(stage);
@@ -52,7 +59,7 @@ public class SecondScreen implements Screen {
 
     @Override
     public void render(float v) {
-        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
+        Gdx.gl.glClearColor(0.25f, 0.25f, 0.25f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (Gdx.input.isKeyPressed(Input.Keys.N)) {
@@ -74,6 +81,7 @@ public class SecondScreen implements Screen {
 
 
         spriteBatch.begin();
+        viewStuffHandler.background.draw(spriteBatch);
         spriteBatch.setColor(new Color(1, 0, 0, 0));
         for(ToolTypeData uiStuff : uiStuffList) {
             font.getData().setScale(uiStuff.scaleX,uiStuff.scaleY);
@@ -88,8 +96,8 @@ public class SecondScreen implements Screen {
     }
 
     @Override
-    public void resize(int i, int i1) {
-
+    public void resize(int width, int height) {
+        viewStuffHandler.resize(width, height);
     }
 
     @Override

@@ -1,5 +1,15 @@
 background.png
-size:2048,1024
+size:2048,2048
 repeat:none
 TempleBG
+bounds:2,580,1024,576
+TempleBottom
+bounds:2,1158,1024,576
+TempleTop
 bounds:2,2,1024,576
+
+background2.png
+size:2048,1024
+repeat:none
+TempleWhole
+bounds:2,2,1024,980
