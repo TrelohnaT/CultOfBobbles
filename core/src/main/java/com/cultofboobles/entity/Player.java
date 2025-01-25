@@ -2,9 +2,12 @@ package com.cultofboobles.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.cultofboobles.Main;
 
 import java.util.List;
 
@@ -28,6 +31,11 @@ public class Player implements Entity {
 
     private final Rectangle hitBox;
 
+    private final Animation<TextureRegion> idle;
+
+    private boolean isFacingLeft = false;
+
+
     public Player(
         String id,
         String atlasPath,
@@ -44,6 +52,8 @@ public class Player implements Entity {
         this.sizeY = sizeY;
         this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY);
         this.atlas = new TextureAtlas(atlasPath);
+
+        this.idle = new Animation<>(1, atlas.findRegions("MainCharacter_IdleFront"));
     }
 
     public void update() {
@@ -64,9 +74,11 @@ public class Player implements Entity {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.x += this.speed * deltaTime * (-1);
             idle = false;
+            isFacingLeft = true;
         } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             this.x += this.speed * deltaTime;
             idle = false;
+            isFacingLeft = false;
         }
 
         // if no movement, switch to idle animation
@@ -85,7 +97,11 @@ public class Player implements Entity {
 
     @Override
     public Sprite getSprite() {
-        Sprite tmp = new Sprite(this.atlas.findRegion("MainCharacter_Idle1"));
+        Sprite tmp = new Sprite(idle.getKeyFrame(Main.timeElapsed, true));
+
+        if(!isFacingLeft) {
+            tmp.flip(true, false);
+        }
 
         tmp.translateX(x - tmp.getWidth() / 2);
         tmp.translateY(y - tmp.getHeight() / 2);

@@ -81,7 +81,7 @@ public class SecondScreen implements Screen {
 
     private void switchToFirstScreen() {
 
-        Day day = Main.dayGeneratord.getDay(Main.currentDay);
+        Day day = DayGenerator.getDay(Main.currentDay);
 
         agame.setScreen(new FirstScreen(agame, day));
 
