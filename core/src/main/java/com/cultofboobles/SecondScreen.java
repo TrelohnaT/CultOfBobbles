@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.cultofboobles.entity.ToolTypeData;
+import com.cultofboobles.utils.SoundHandler;
 import com.cultofboobles.utils.day.Day;
 import com.cultofboobles.utils.day.DayGenerator;
 import com.cultofboobles.view.ViewStuffHandler;
@@ -37,6 +38,9 @@ public class SecondScreen implements Screen {
 
     @Override
     public void show() {
+        if(SoundHandler.playIntro) {
+            SoundHandler.getIntro().play();
+        }
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         spriteBatch = new SpriteBatch();
         viewStuffHandler = new ViewStuffHandler("TempleTop");
