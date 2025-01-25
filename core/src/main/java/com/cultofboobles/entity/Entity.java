@@ -15,6 +15,8 @@ public interface Entity {
 
     List<Sprite> getSpriteList();
 
+    Sprite getSprite();
+
     Rectangle getHitBox();
 
     /**

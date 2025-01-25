@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.cultofboobles.entity.Entity;
 import com.cultofboobles.entity.EntityFactory;
-import com.cultofboobles.entity.Player;
 import com.cultofboobles.obstacle.Obstacle;
 import com.cultofboobles.obstacle.ObstacleFactory;
 import com.cultofboobles.ui.UiHandler;
@@ -91,6 +90,8 @@ public class FirstScreen implements Screen {
 
         checkCollisions(player);
 
+        drawAll();
+
         drawHitBoxes();
 
     }
@@ -127,14 +128,12 @@ public class FirstScreen implements Screen {
 
         this.entityMap.put(
             "player",
-            new Player(
-                "player",
-                "",
+
+            EntityFactory.makePlayer(
                 Gdx.graphics.getWidth() / 2,
-                Gdx.graphics.getHeight() / 2,
-                32,
-                64
+                Gdx.graphics.getHeight() / 2
             )
+
         );
 
         this.entityMap.put(
@@ -203,7 +202,15 @@ public class FirstScreen implements Screen {
             rectangle.width,
             rectangle.height
         );
+    }
 
+    private void drawAll() {
+        spriteBatch.begin();
+        entityMap.get("player").getSprite().draw(spriteBatch);
+
+        obstacleMap.values().forEach(v -> v.getSprite().draw(spriteBatch));
+
+        spriteBatch.end();
     }
 
     private void checkCollisions(Entity player) {
@@ -216,9 +223,9 @@ public class FirstScreen implements Screen {
 
         entityMap.forEach((idEntity, entity) -> {
             obstacleMap.forEach((idObstacle, obstacle) -> {
-                if(entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.UnEnterAble).rectangle)) {
+                if (entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.UnEnterAble).rectangle)) {
                     entity.hitObstacle(idObstacle);
-                } else if(entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.EnterAble).rectangle)) {
+                } else if (entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.EnterAble).rectangle)) {
                     entity.interact(idObstacle);
                 }
             });

@@ -16,4 +16,15 @@ public class EntityFactory {
         );
     }
 
+    public static Player makePlayer(float x, float y) {
+        return new Player(
+            "player",
+            "player/player.atlas",
+            x,
+            y,
+            32,
+            64
+        );
+    }
+
 }

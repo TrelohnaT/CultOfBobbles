@@ -1,5 +1,6 @@
 package com.cultofboobles.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -15,7 +16,7 @@ public class Customer implements Entity {
     private final float sizeY;
     private final Rectangle hitBox;
 
-    private final float speed = 5;
+    private final float speed = 100;
 
     private String targetId = "bed1";
 
@@ -39,8 +40,6 @@ public class Customer implements Entity {
         this.sizeY = sizeY;
         this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY);
 
-        this.targetX = targetX;
-        this.targetY = targetY;
 
     }
 
@@ -65,6 +64,11 @@ public class Customer implements Entity {
     }
 
     @Override
+    public Sprite getSprite() {
+        return null;
+    }
+
+    @Override
     public Rectangle getHitBox() {
         return this.hitBox;
     }
@@ -76,22 +80,23 @@ public class Customer implements Entity {
 
     @Override
     public void interact(String obstacleId) {
-        if(targetId.equals(obstacleId)) {
+        if (targetId.equals(obstacleId)) {
             System.out.println("bed reached");
         }
     }
 
     @Override
     public void update() {
-
-        if (this.y < targetY) {
-            this.y += speed;
-        } else if (targetY < this.y) {
-            this.y -= speed;
+//
+//        if (this.y < targetY) {
+//            this.y += speed * Gdx.graphics.getDeltaTime();
+//        } else
+        if (targetY < this.y) {
+            this.y -= speed * Gdx.graphics.getDeltaTime();
         } else if (this.x < targetX) {
-            this.x += speed;
+            this.x += speed * Gdx.graphics.getDeltaTime();
         } else if (targetX < this.x) {
-            this.x -= speed;
+            this.x -= speed * Gdx.graphics.getDeltaTime();
         }
 
         this.hitBox.setPosition(this.x, this.y);
