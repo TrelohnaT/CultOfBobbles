@@ -1,26 +1,21 @@
 package com.cultofboobles.obstacle;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.utils.HitBox;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-public class Bed implements Obstacle{
+public class Bed implements Obstacle {
 
     private final String id;
     private final float x;
     private final float y;
-//    private final float sizeX;
-//    private final float sizeY;
-
-    private final float hitboxOffset = 32;
 
     private final Sprite sprite;
+
+    private boolean empty = true;
 
     Map<HitBox.types, HitBox> hitBoxMap = new HashMap<>();
 
@@ -28,9 +23,7 @@ public class Bed implements Obstacle{
         String id,
         Sprite sprite,
         float x,
-        float y//,
-//        float sizeX,
-//        float sizeY
+        float y
     ) {
         this.id = id;
         this.x = x;
@@ -45,7 +38,7 @@ public class Bed implements Obstacle{
             new HitBox(
                 "",
                 HitBox.types.UnEnterAble,
-                new Rectangle(x,y,sprite.getWidth(),sprite.getHeight())
+                new Rectangle(x, y, sprite.getWidth(), sprite.getHeight())
             )
         );
 
@@ -55,10 +48,10 @@ public class Bed implements Obstacle{
                 "",
                 HitBox.types.EnterAble,
                 new Rectangle(
-                    x-sprite.getWidth()/2,
-                    y-sprite.getHeight()/2,
-                    sprite.getWidth()*2,
-                    sprite.getHeight()*2
+                    x - sprite.getWidth() / 2,
+                    y - sprite.getHeight() / 2,
+                    sprite.getWidth() * 2,
+                    sprite.getHeight() * 2
                 )
             )
         );
@@ -89,4 +82,13 @@ public class Bed implements Obstacle{
     public HitBox getHitbox(HitBox.types type) {
         return hitBoxMap.get(type);
     }
+
+    public void setEmpty(boolean value) {
+        this.empty = value;
+    }
+
+    public boolean isEmpty() {
+        return this.empty;
+    }
+
 }

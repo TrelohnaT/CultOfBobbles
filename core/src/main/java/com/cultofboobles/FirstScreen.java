@@ -14,6 +14,7 @@ import com.cultofboobles.entity.EntityFactory;
 import com.cultofboobles.obstacle.Obstacle;
 import com.cultofboobles.obstacle.ObstacleFactory;
 import com.cultofboobles.ui.UiHandler;
+import com.cultofboobles.utils.day.Day;
 import com.cultofboobles.utils.HitBox;
 import com.cultofboobles.view.ViewStuffHandler;
 
@@ -26,6 +27,7 @@ import java.util.Map;
 public class FirstScreen implements Screen {
 
     private final Game agame;
+    private final Day day;
 
     private SpriteBatch spriteBatch;
     private ShapeRenderer sr;
@@ -37,8 +39,10 @@ public class FirstScreen implements Screen {
     private UiHandler uiHandler;
     private Stage stage;
 
-    public FirstScreen(Game agame) {
+
+    public FirstScreen(Game agame, Day day) {
         this.agame = agame;
+        this.day = day;
     }
 
     @Override
@@ -74,8 +78,9 @@ public class FirstScreen implements Screen {
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
         Main.timeElapsed += delta;
-
         Entity player = entityMap.get("player");
+
+
 
         handleViewPort();
 
