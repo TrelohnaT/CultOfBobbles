@@ -10,9 +10,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.cultofboobles.entity.Entity;
+import com.cultofboobles.entity.EntityFactory;
 import com.cultofboobles.entity.Player;
-import com.cultofboobles.obstacle.Bed;
 import com.cultofboobles.obstacle.Obstacle;
+import com.cultofboobles.obstacle.ObstacleFactory;
 import com.cultofboobles.ui.UiHandler;
 import com.cultofboobles.utils.HitBox;
 import com.cultofboobles.view.ViewStuffHandler;
@@ -60,13 +61,12 @@ public class FirstScreen implements Screen {
 
         obstacleMap.put(
             "bed1",
-            new Bed(
+            ObstacleFactory.makeBed(
                 "bed1",
                 70,
-                70,
-                64,
-                128
-                )
+                70
+            )
+
         );
 
     }
@@ -85,8 +85,8 @@ public class FirstScreen implements Screen {
         entityMap.forEach((id, entity) -> entity.update());
 
 
-        if(!viewStuffHandler.getActualViewPort().contains(player.getHitBox())) {
-            player.hitObstacle();
+        if (!viewStuffHandler.getActualViewPort().contains(player.getHitBox())) {
+            player.hitObstacle("border");
         }
 
         checkCollisions(player);
@@ -99,7 +99,7 @@ public class FirstScreen implements Screen {
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
         viewStuffHandler.resize(width, height);
-        stage.getViewport().update(width, height, true);
+        //stage.getViewport().update(width, height, true);
 
     }
 
@@ -130,11 +130,21 @@ public class FirstScreen implements Screen {
             new Player(
                 "player",
                 "",
-                Gdx.graphics.getWidth()/2,
-                Gdx.graphics.getHeight()/2,
-                64,
+                Gdx.graphics.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2,
+                32,
                 64
             )
+        );
+
+        this.entityMap.put(
+            "customer",
+            EntityFactory.makeCustomer(
+                "customer",
+                Gdx.graphics.getWidth() / 2,
+                Gdx.graphics.getHeight() - 100)
+
+
         );
 
     }
@@ -150,8 +160,8 @@ public class FirstScreen implements Screen {
     }
 
     private void drawUi() {
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+        //stage.act(Gdx.graphics.getDeltaTime());
+        //stage.draw();
     }
 
     private void drawHitBoxes() {
@@ -177,11 +187,10 @@ public class FirstScreen implements Screen {
     }
 
     private void drawHitBox(HitBox hitBox) {
-        if(HitBox.types.UnEnterAble.equals(hitBox.type)) {
-            drawRectangle(hitBox.rectangle, new Color(1,0,0,0));
-        }
-        else if(HitBox.types.EnterAble.equals(hitBox.type)) {
-            drawRectangle(hitBox.rectangle, new Color(0,1,0,0));
+        if (HitBox.types.UnEnterAble.equals(hitBox.type)) {
+            drawRectangle(hitBox.rectangle, new Color(1, 0, 0, 0));
+        } else if (HitBox.types.EnterAble.equals(hitBox.type)) {
+            drawRectangle(hitBox.rectangle, new Color(0, 1, 0, 0));
         }
 
     }
@@ -200,11 +209,21 @@ public class FirstScreen implements Screen {
     private void checkCollisions(Entity player) {
 
         obstacleMap.forEach((id, value) -> {
-            if(value.getHitbox(HitBox.types.UnEnterAble).rectangle.overlaps(player.getHitBox())) {
-
-                player.hitObstacle();
+            if (value.getHitbox(HitBox.types.UnEnterAble).rectangle.overlaps(player.getHitBox())) {
+                player.hitObstacle(value.getId());
             }
         });
+
+        entityMap.forEach((idEntity, entity) -> {
+            obstacleMap.forEach((idObstacle, obstacle) -> {
+                if(entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.UnEnterAble).rectangle)) {
+                    entity.hitObstacle(idObstacle);
+                } else if(entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.EnterAble).rectangle)) {
+                    entity.interact(idObstacle);
+                }
+            });
+        });
+
 
     }
 

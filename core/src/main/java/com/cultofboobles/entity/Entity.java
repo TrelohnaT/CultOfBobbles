@@ -20,7 +20,9 @@ public interface Entity {
     /**
      * If some obstacle is hit, jump to the before position
      */
-    void hitObstacle();
+    void hitObstacle(String obstacleId);
+
+    void interact(String obstacleId);
 
     void update();
 

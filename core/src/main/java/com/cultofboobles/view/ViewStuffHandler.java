@@ -12,10 +12,9 @@ public class ViewStuffHandler {
     private float viewPortY = 700;
 
     private final OrthographicCamera camera;
-    private final Vector3 cameraVector = new Vector3();
     private final ExtendViewport viewport;
 
-    private final Rectangle actualViewPort;
+    private Rectangle actualViewPort;
 
     public ViewStuffHandler() {
 
@@ -26,8 +25,8 @@ public class ViewStuffHandler {
         viewport = new ExtendViewport(viewPortX, viewPortY, camera);
 
         actualViewPort = new Rectangle(
-            cameraVector.x,
-            cameraVector.y,
+            0,
+            0,
             viewPortX,
             viewPortY
         );
@@ -37,20 +36,12 @@ public class ViewStuffHandler {
     public void resize(int width, int height) {
         viewport.update(width, height, true);
         viewport.setWorldSize(width, height);
+        //actualViewPort = new Rectangle(0,0,width,height);
+        //actualViewPort.setSize(width,height);
+        actualViewPort.setWidth(Gdx.graphics.getWidth());
+
     }
 
-    public void moveCamera(float x, float y) {
-        float newX = x + 0.5f;
-        float newY = y + 0.5f;
-
-        cameraVector.x = newX;
-        cameraVector.y = newY;
-        viewport.getCamera().position.lerp(cameraVector, 0.1f);
-        actualViewPort.setPosition(
-            newX - viewPortX / 2,
-            newY - viewPortY / 2
-        );
-    }
 
     public ExtendViewport getViewport() {
         return viewport;

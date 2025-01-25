@@ -88,9 +88,14 @@ public class Player implements Entity {
     }
 
     @Override
-    public void hitObstacle() {
+    public void hitObstacle(String obstacleId) {
         this.x = previousX;
         this.y = previousY;
+    }
+
+    @Override
+    public void interact(String obstacleId) {
+
     }
 
     @Override
