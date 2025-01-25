@@ -7,10 +7,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.entity.Customer;
 import com.cultofboobles.entity.Entity;
 import com.cultofboobles.entity.Player;
+import com.cultofboobles.utils.AtlasHandler;
 import com.cultofboobles.utils.HitBox;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Bed implements Obstacle {
 
@@ -24,6 +26,8 @@ public class Bed implements Obstacle {
     private boolean free = true;
 
     private Customer customer;
+
+    private Optional<Sprite> showOverlay = Optional.empty();
 
     Map<HitBox.types, HitBox> hitBoxMap = new HashMap<>();
 
@@ -93,18 +97,18 @@ public class Bed implements Obstacle {
 
     @Override
     public void interact(Entity entity) {
-        if(entity instanceof Customer) {
-            if(entity.interactBed(this)) {
+        if (entity instanceof Customer) {
+            if (entity.interactBed(this)) {
                 System.out.println(this.id + " has " + entity.getId());
                 this.customer = (Customer) entity;
             }
         }
 
-        if(entity instanceof Player) {
+        if (entity instanceof Player) {
 
-            if(Gdx.input.isKeyPressed(Input.Keys.E)) {
-                if(!this.empty) {
-                    if(customer.increaseCleanProgress()) {
+            if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+                if (!this.empty) {
+                    if (customer.increaseCleanProgress()) {
                         System.out.println("customer cleaned");
                     } else {
                         System.out.println("customer cleaning");
@@ -113,10 +117,23 @@ public class Bed implements Obstacle {
                     System.out.println("wait for customer");
                 }
             }
+        }
+    }
 
+    @Override
+    public Optional<Sprite> getOverLay() {
+        if(this.empty) {
+            return Optional.of(new Sprite(AtlasHandler.obstacle.findRegion("Empty")));
+        }
+
+        if (this.customer != null) {
+            Sprite tmp = customer.getOverlayBasedOnCleanProgress();
+            tmp.translate(x, y);
+            return Optional.of(tmp);
         }
 
 
+        return Optional.empty();
     }
 
     public void setFree(boolean value) {

@@ -24,5 +24,6 @@ public interface Obstacle {
 
     void interact(Entity entity);
 
+    Optional<Sprite> getOverLay();
 
 }

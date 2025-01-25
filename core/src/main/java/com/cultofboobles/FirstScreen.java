@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -300,6 +301,15 @@ public class FirstScreen implements Screen {
             );
 
         });
+
+
+        obstacleMap.values()
+            .forEach(v -> {
+                if(v.getOverLay().isPresent()) {
+                    v.getOverLay().get().draw(spriteBatch);
+                }
+            });
+            //.forEach(v -> v.getOverLay().ifPresent(s -> s.draw(spriteBatch)));
 
         font.draw(spriteBatch, "day time left: " + dayTimeLeft, 100, 80);
         font.draw(spriteBatch, "today order: " + day.orderForDay, 100, 100);
