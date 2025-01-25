@@ -2,6 +2,7 @@ package com.cultofboobles.entity;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.cultofboobles.obstacle.Bed;
 
 import java.util.List;
 
@@ -24,9 +25,11 @@ public interface Entity {
      */
     void hitObstacle(String obstacleId);
 
-    void interact(String obstacleId);
+    void interactBed(Bed bed);
 
     void update();
+
+    boolean isDoomed();
 
     void load();
 

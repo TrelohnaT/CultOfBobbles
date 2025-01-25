@@ -3,6 +3,9 @@ package com.cultofboobles.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.cultofboobles.Main;
+import com.cultofboobles.obstacle.Bed;
+import com.cultofboobles.utils.Utils;
 
 import java.util.List;
 
@@ -20,8 +23,17 @@ public class Customer implements Entity {
 
     private String targetId;
 
-    private float targetX = 170;
-    private float targetY = 270;
+    private float beforeBedX = 0;
+    private float beforeBedY = 0;
+
+    private float timeEnteringBed = 0;
+
+    private visitStates state = visitStates.Entry;
+
+    private happinessStates mood = happinessStates.Neutral;
+
+    private boolean doomed = false;
+
 
     public Customer(
         String id,
@@ -80,27 +92,61 @@ public class Customer implements Entity {
     }
 
     @Override
-    public void interact(String obstacleId) {
-        if (targetId.equals(obstacleId)) {
-            System.out.println("bed reached");
+    public void interactBed(Bed bed) {
+
+        if(state.equals(visitStates.Leaving)) {
+            return;
+        }
+
+        if (targetId.equals(bed.getId())) {
+            System.out.println("bed reached: " + bed.getId());
+            this.state = visitStates.InBed;
+
+            this.timeEnteringBed = Main.timeElapsed;
+
+            this.beforeBedX = this.x;
+            this.beforeBedY = this.y;
+
+            this.x = bed.getX();
+            this.y = bed.getY();
+
         }
     }
 
     @Override
     public void update() {
-//
-//        if (this.y < targetY) {
-//            this.y += speed * Gdx.graphics.getDeltaTime();
-//        } else
-        if (targetY < this.y) {
-            this.y -= speed * Gdx.graphics.getDeltaTime();
-        } else if (this.x < targetX) {
-            this.x += speed * Gdx.graphics.getDeltaTime();
-        } else if (targetX < this.x) {
-            this.x -= speed * Gdx.graphics.getDeltaTime();
+        if (state.equals(visitStates.Entry)) {
+            if (270 < this.y) {
+                this.y -= speed * Gdx.graphics.getDeltaTime();
+            } else if (170 < this.x) {
+                this.x -= speed * Gdx.graphics.getDeltaTime();
+            }
+        } else if (state.equals(visitStates.InBed)) {
+            if(Main.timeElapsed - this.timeEnteringBed > Utils.getRandom(3, 5)) {
+                state = visitStates.Leaving;
+                this.x = this.beforeBedX + 5;
+                this.y = this.beforeBedY;
+            }
+
+
+        } else if (state.equals(visitStates.Leaving)) {
+            if (this.x <= 500) {
+                this.x += speed * Gdx.graphics.getDeltaTime();
+            } else if (0 < this.y) {
+                this.y += speed * Gdx.graphics.getDeltaTime();
+            }
+        }
+        this.hitBox.setPosition(this.x, this.y);
+
+        if (this.y > 480) {
+            this.doomed = true;
         }
 
-        this.hitBox.setPosition(this.x, this.y);
+    }
+
+    @Override
+    public boolean isDoomed() {
+        return this.doomed;
     }
 
     @Override
@@ -112,4 +158,17 @@ public class Customer implements Entity {
     public void clear() {
 
     }
+
+    public enum visitStates {
+        Entry,
+        InBed,
+        Leaving
+    }
+
+    public enum happinessStates {
+        Happy,
+        Neutral,
+        UnHappy
+    }
+
 }

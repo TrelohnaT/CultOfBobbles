@@ -10,18 +10,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.cultofboobles.entity.Customer;
 import com.cultofboobles.entity.Entity;
 import com.cultofboobles.entity.EntityFactory;
+import com.cultofboobles.obstacle.Bed;
 import com.cultofboobles.obstacle.Obstacle;
 import com.cultofboobles.obstacle.ObstacleFactory;
 import com.cultofboobles.ui.UiHandler;
+import com.cultofboobles.utils.Utils;
 import com.cultofboobles.utils.day.Day;
 import com.cultofboobles.utils.HitBox;
-import com.cultofboobles.utils.day.DayGenerator;
 import com.cultofboobles.view.ViewStuffHandler;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * First screen of the application. Displayed after the application is created.
@@ -45,6 +46,8 @@ public class FirstScreen implements Screen {
 
     private float dayStart = 0;
     private int dayTimeLeft= 10;
+
+    private List<String> doomedList = new LinkedList<>();
 
     public FirstScreen(Game agame, Day day) {
         this.agame = agame;
@@ -113,11 +116,24 @@ public class FirstScreen implements Screen {
             player.hitObstacle("border");
         }
 
+        customerSpawner();
+
         checkCollisions(player);
 
         drawAll();
 
         drawHitBoxes();
+
+        for(Entity entity : this.entityMap.values()) {
+            if(entity.isDoomed()) {
+                doomedList.add(entity.getId());
+            }
+        }
+
+        for(String doomedId : doomedList) {
+            entityMap.remove(doomedId);
+        }
+        doomedList.clear();
 
     }
 
@@ -161,17 +177,42 @@ public class FirstScreen implements Screen {
 
         );
 
-        this.entityMap.put(
-            "customer",
-            EntityFactory.makeCustomer(
-                "customer",
-                "bed1",
-                viewStuffHandler.background.getWidth() / 2,
-                viewStuffHandler.background.getHeight() - 100
-            )
+    }
 
+    private void customerSpawner() {
 
-        );
+        if(Main.timeElapsed - EntityFactory.lastSpawnedCustomer < Utils.getRandom(2, 10)) {
+            return;
+        }
+
+        // find empty bed
+        Optional<Bed> emptyBed = Optional.empty();
+        List<Bed> bedList = getBedList();
+        for(Bed bed : bedList) {
+            if(bed.isEmpty()) {
+                emptyBed = Optional.of(bed);
+                break;
+            }
+        }
+
+        // if empty bed exists and new customer may be spawned
+        // add empty bed as destination and mark the bed as no longer empty
+        if(emptyBed.isPresent() && EntityFactory.customerCount < day.customerMaxCount) {
+            EntityFactory.lastSpawnedCustomer = Main.timeElapsed;
+            emptyBed.get().setEmpty(false);
+            String customerId = "customer_" + EntityFactory.customerCount;
+            this.entityMap.put(
+                customerId,
+                EntityFactory.makeCustomer(
+                    customerId,
+                    emptyBed.get().getId(),
+                    viewStuffHandler.background.getWidth() / 2,
+                    viewStuffHandler.background.getHeight() - 100
+                )
+            );
+
+        }
+
 
     }
 
@@ -247,6 +288,7 @@ public class FirstScreen implements Screen {
         obstacleMap.values().forEach(v -> v.getSprite().draw(spriteBatch));
 
         font.draw(spriteBatch, "day time left: " + dayTimeLeft, 100, 100);
+        font.draw(spriteBatch, "today order: " + day.orderForDay, 100, 120);
 
         spriteBatch.end();
     }
@@ -264,12 +306,34 @@ public class FirstScreen implements Screen {
                 if (entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.UnEnterAble).rectangle)) {
                     entity.hitObstacle(idObstacle);
                 } else if (entity.getHitBox().overlaps(obstacle.getHitbox(HitBox.types.EnterAble).rectangle)) {
-                    entity.interact(idObstacle);
+                    // ToDo add type check
+                    entity.interactBed((Bed) obstacle);
+
                 }
             });
         });
 
 
+    }
+
+    private List<Bed> getBedList() {
+        List<Bed> tmp = new LinkedList<>();
+        for(Map.Entry<String, Obstacle> entry : obstacleMap.entrySet()) {
+            if (entry.getValue() instanceof Bed) {
+                tmp.add((Bed) entry.getValue());
+            }
+        }
+        return tmp;
+    }
+
+    private List<Customer> getCunstomerList() {
+        List<Customer> tmp = new LinkedList<>();
+        for(Map.Entry<String, Entity> entry : entityMap.entrySet()) {
+            if (entry.getValue() instanceof Customer) {
+                tmp.add((Customer) entry.getValue());
+            }
+        }
+        return tmp;
     }
 
 }
