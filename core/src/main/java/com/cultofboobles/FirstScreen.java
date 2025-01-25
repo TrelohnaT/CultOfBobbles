@@ -124,7 +124,7 @@ public class FirstScreen implements Screen {
 
         drawAll();
 
-        drawHitBoxes();
+        //drawHitBoxes();
 
         for (Entity entity : this.entityMap.values()) {
             if (entity.isDoomed()) {
