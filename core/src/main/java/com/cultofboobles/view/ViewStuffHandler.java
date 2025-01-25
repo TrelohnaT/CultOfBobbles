@@ -21,9 +21,9 @@ public class ViewStuffHandler {
 
     public Sprite background;
 
-    public ViewStuffHandler() {
+    public ViewStuffHandler(String name) {
 
-        background = new Sprite(new TextureAtlas("utils/background.atlas").findRegion("TempleBG"));
+        background = new Sprite(new TextureAtlas("utils/background.atlas").findRegion(name));
 
         //background.setScale(1.5f);
         viewPortX = background.getWidth(); //Gdx.graphics.getWidth();
@@ -52,10 +52,10 @@ public class ViewStuffHandler {
 
         camera.zoom = viewPortX/width;
 
-        moveCamera(
-            viewPortX / 2,
-            viewPortY / 2
-        );
+//        moveCamera(
+//            viewPortX / 2,
+//            viewPortY / 2
+//        );
 
     }
 
@@ -66,17 +66,17 @@ public class ViewStuffHandler {
         cameraVector.x = newX;
         cameraVector.y = newY;
         //ToDo fix resize down
-        //viewport.getCamera().position.lerp(cameraVector, 0.1f);
-//        actualViewPort.setPosition(
-//            newX - viewPortX / 2,
-//            newY - viewPortY / 2
-//        );
-//        actualViewPort = new Rectangle(
-//            0,
-//            0,
-//            viewPortX,
-//            viewPortY
-//        );
+        viewport.getCamera().position.lerp(cameraVector, 0.1f);
+        actualViewPort.setPosition(
+            newX - viewPortX / 2,
+            newY - viewPortY / 2
+        );
+        actualViewPort = new Rectangle(
+            0,
+            0,
+            viewPortX,
+            viewPortY
+        );
 
         //background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
