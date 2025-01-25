@@ -8,6 +8,8 @@ import com.cultofboobles.utils.day.DayGenerator;
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
 
+    public static Game agame;
+
     public static float timeElapsed = 0;
     public static int currentDay = 0;
     public static AtlasHandler atlasHandler;
@@ -16,6 +18,7 @@ public class Main extends Game {
 
     @Override
     public void create() {
+        agame = this;
         ecomonics = new Ecomonics();
         atlasHandler  = new AtlasHandler();
         setScreen(new SecondScreen(this));

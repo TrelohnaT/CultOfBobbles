@@ -2,7 +2,9 @@ package com.cultofboobles.obstacle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.entity.Customer;
 import com.cultofboobles.entity.Entity;
@@ -26,8 +28,6 @@ public class Bed implements Obstacle {
     private boolean free = true;
 
     private Customer customer;
-
-    private Optional<Sprite> showOverlay = Optional.empty();
 
     Map<HitBox.types, HitBox> hitBoxMap = new HashMap<>();
 
@@ -116,6 +116,16 @@ public class Bed implements Obstacle {
                 } else {
                     System.out.println("wait for customer");
                 }
+            } else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
+                if(!this.empty) {
+                    if(customer.amICleaned()) {
+                        if (customer.progressSacrificion()) {
+                            this.empty = true;
+                            this.free = true;
+                            //this.customer = null;
+                        }
+                    }
+                }
             }
         }
     }
@@ -124,6 +134,13 @@ public class Bed implements Obstacle {
     public Optional<Sprite> getOverLay() {
         if(this.empty) {
             return Optional.of(new Sprite(AtlasHandler.obstacle.findRegion("Empty")));
+        }
+
+        if(customer.amICleaned()) {
+            Sprite tmp = customer.getOverlaySacrifice();
+            tmp.translate(x, y);
+            return Optional.of(tmp);
+
         }
 
         if (this.customer != null) {

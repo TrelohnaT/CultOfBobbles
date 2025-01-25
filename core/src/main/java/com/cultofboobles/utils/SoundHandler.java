@@ -8,7 +8,6 @@ public class SoundHandler {
     public static boolean playIntro = true;
 
     public static Sound getIntro() {
-        playIntro = false;
         return Gdx.audio.newSound(Gdx.files.internal("sound/Bubel lines/bubelintro.wav"));
     }
 
