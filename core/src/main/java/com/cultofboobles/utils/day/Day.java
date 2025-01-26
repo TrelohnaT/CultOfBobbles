@@ -2,7 +2,7 @@ package com.cultofboobles.utils.day;
 
 public class Day {
 
-    public int duration = 5;
+    public int duration = 50;
 
     public int customerMaxCount;
 

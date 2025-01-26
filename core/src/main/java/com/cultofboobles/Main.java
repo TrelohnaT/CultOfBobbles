@@ -1,6 +1,7 @@
 package com.cultofboobles;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.cultofboobles.utils.AtlasHandler;
 import com.cultofboobles.utils.Ecomonics;
 import com.cultofboobles.utils.day.DayGenerator;

@@ -28,6 +28,7 @@ public class SecondScreen implements Screen {
     private SpriteBatch spriteBatch;
     private Skin skin;
     private Sound intro;
+    private Sound music;
 
     public SecondScreen(Game agame) {
         this.agame = agame;
@@ -37,11 +38,17 @@ public class SecondScreen implements Screen {
 
     @Override
     public void show() {
-        intro = SoundHandler.getIntro();
-        SoundHandler.playIntro = false; //ToDo put this out
+        //SoundHandler.playIntro = false; //ToDo put this out
         if (SoundHandler.playIntro) {
+            intro = SoundHandler.getIntro();
+            music = SoundHandler.getBubelFaded();//SoundHandler.getBetweenDayMusic();
+            music.loop(0.3f);
             SoundHandler.playIntro = false;
             intro.play();
+        } else {
+
+            music = SoundHandler.getBetweenDayMusic();
+            music.loop(0.3f);
         }
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         spriteBatch = new SpriteBatch();
@@ -116,7 +123,12 @@ public class SecondScreen implements Screen {
 
     @Override
     public void hide() {
-
+        System.out.println("hide");
+        skin.dispose();
+        if(intro != null) {
+            intro.stop();
+        }
+        music.stop();
     }
 
     @Override
@@ -124,6 +136,7 @@ public class SecondScreen implements Screen {
         System.out.println("dispose");
         skin.dispose();
         intro.stop();
+        music.stop();
     }
 
     private void switchToFirstScreen() {

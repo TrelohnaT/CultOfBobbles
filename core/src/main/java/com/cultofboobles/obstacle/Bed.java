@@ -2,6 +2,7 @@ package com.cultofboobles.obstacle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -11,6 +12,7 @@ import com.cultofboobles.entity.Entity;
 import com.cultofboobles.entity.Player;
 import com.cultofboobles.utils.AtlasHandler;
 import com.cultofboobles.utils.HitBox;
+import com.cultofboobles.utils.SoundHandler;
 
 import java.util.HashMap;
 import java.util.Map;

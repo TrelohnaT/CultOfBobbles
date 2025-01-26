@@ -1,11 +1,13 @@
 package com.cultofboobles.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.Main;
 import com.cultofboobles.obstacle.Bed;
 import com.cultofboobles.utils.AtlasHandler;
+import com.cultofboobles.utils.SoundHandler;
 import com.cultofboobles.utils.Utils;
 
 import java.util.List;
@@ -234,8 +236,12 @@ public class Customer implements Entity {
 
     public boolean progressSacrificion() {
         System.out.println(sacrificeProgress);
+        if(sacrificeProgress == -1) {
+            Sound sacrificePop = SoundHandler.getSacrificePop();
+            sacrificePop.play();
+        }
         if (sacrificeProgress < 4) {
-            sacrificeProgress += 0.2f;
+            sacrificeProgress += 0.05f;
             return false;
         } else {
             this.doomed = true;
