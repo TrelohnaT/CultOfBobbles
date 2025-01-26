@@ -26,18 +26,27 @@ public class SecondScreen implements Screen {
 
     private BitmapFont font;
     private SpriteBatch spriteBatch;
-    private Skin skin;
     private Sound intro;
     private Sound music;
 
     public SecondScreen(Game agame) {
         this.agame = agame;
         font = new BitmapFont(Gdx.files.internal("font/Tin5-Regular.fnt"));
-        font.setColor(0, 0, 0, 1);
+        font.setColor(1, 1, 1, 1);
     }
 
     @Override
     public void show() {
+        Main.favorDemand += (20 * Main.currentDay);
+
+        if(endOfRun()) {
+            viewStuffHandler = new ViewStuffHandler("TempleTop");
+
+        } else {
+            System.out.println("game go on");
+            viewStuffHandler = new ViewStuffHandler("TempleTop");
+        }
+
         //SoundHandler.playIntro = false; //ToDo put this out
         if (SoundHandler.playIntro) {
             intro = SoundHandler.getIntro();
@@ -50,9 +59,7 @@ public class SecondScreen implements Screen {
             music = SoundHandler.getBetweenDayMusic();
             music.loop(0.3f);
         }
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         spriteBatch = new SpriteBatch();
-        viewStuffHandler = new ViewStuffHandler("TempleTop");
 
 //        stage = new Stage(new ScreenViewport());
 //        Gdx.input.setInputProcessor(stage);
@@ -79,14 +86,14 @@ public class SecondScreen implements Screen {
 
         List<ToolTypeData> uiStuffList = new LinkedList<>();
 
+        float winWidth = Gdx.graphics.getWidth();
+        float winHeight = Gdx.graphics.getHeight();
 
-        uiStuffList.add(new ToolTypeData("Day: " + Main.currentDay, 400, 500, 2, 2));
-        uiStuffList.add(new ToolTypeData("Coin balance: " + Main.ecomonics.getMoneyCount(), 200, 450));
+        uiStuffList.add(new ToolTypeData("Day: " + Main.currentDay, winWidth/2 - 80, 60, 2, 2));
+        uiStuffList.add(new ToolTypeData("Coin balance: " + Main.ecomonics.getMoneyCount(), winWidth/8, 40));
+        uiStuffList.add(new ToolTypeData("Favor balance: " + Main.ecomonics.getBubbleFavor() + " / " + Main.favorDemand, (winWidth/8)*5, 40));
 
-        uiStuffList.add(new ToolTypeData("Coin Soap: " + Main.ecomonics.getSoap() + " buy more Soap by pressing: Q", 200, 400));
-        uiStuffList.add(new ToolTypeData("shoping is not working, fix it", 200, 350));
-
-        uiStuffList.add(new ToolTypeData("Start play by pressing: N", 100, 100));
+        uiStuffList.add(new ToolTypeData("press N to start", winWidth/2 - 110, winHeight/2));
 
 
         spriteBatch.begin();
@@ -124,7 +131,6 @@ public class SecondScreen implements Screen {
     @Override
     public void hide() {
         System.out.println("hide");
-        skin.dispose();
         if(intro != null) {
             intro.stop();
         }
@@ -142,6 +148,10 @@ public class SecondScreen implements Screen {
         agame.setScreen(new FirstScreen(agame, day));
 
 
+    }
+
+    private boolean endOfRun() {
+        return Main.ecomonics.getBubbleFavor() < Main.favorDemand;
     }
 
 }

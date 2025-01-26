@@ -141,7 +141,7 @@ public class Player implements Entity {
     @Override
     public Optional<ToolTypeData> getToolType() {
         if(toolType.equals(toolTypeEnum.Clean)) {
-             return Optional.of(new ToolTypeData("E / Q", this.x - 5, this.y + getHitBox().height - 10));
+             return Optional.of(new ToolTypeData("E / Q", this.x - 20, this.y + getHitBox().height - 10, 0.75f, 0.75f));
         }
         return Optional.empty();
     }

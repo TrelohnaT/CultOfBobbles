@@ -14,6 +14,7 @@ public class Main extends Game {
     public static float timeElapsed = 0;
     public static int currentDay = 0;
     public static AtlasHandler atlasHandler;
+    public static int favorDemand = 10;
 
     public static Ecomonics ecomonics;
 

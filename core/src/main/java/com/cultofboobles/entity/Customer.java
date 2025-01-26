@@ -239,6 +239,7 @@ public class Customer implements Entity {
         if(sacrificeProgress == -1) {
             Sound sacrificePop = SoundHandler.getSacrificePop();
             sacrificePop.play();
+            Main.ecomonics.addBubbleFavor(10);
         }
         if (sacrificeProgress < 4) {
             sacrificeProgress += 0.05f;

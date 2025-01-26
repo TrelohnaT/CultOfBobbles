@@ -6,6 +6,8 @@ public class Ecomonics {
 
     private int soap = 10;
 
+    private int bubbleFavor = 10;
+
     public Ecomonics() {
 
     }
@@ -34,6 +36,14 @@ public class Ecomonics {
             this.soap += amount;
             return true;
         }
+    }
+
+    public int getBubbleFavor() {
+        return this.bubbleFavor;
+    }
+
+    public void addBubbleFavor(int amount) {
+        this.bubbleFavor += amount;
     }
 
 }

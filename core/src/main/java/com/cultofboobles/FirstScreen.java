@@ -59,7 +59,7 @@ public class FirstScreen implements Screen {
         this.agame = agame;
         this.day = day;
 
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("font/Tin5-Regular.fnt"));
     }
 
     @Override
@@ -303,19 +303,22 @@ public class FirstScreen implements Screen {
             v.getSprite().draw(spriteBatch);
 
             v.getToolType().ifPresent(
-                toolTypeData -> font.draw(
-                    spriteBatch, toolTypeData.msg,
-                    toolTypeData.x,
-                    toolTypeData.y
-                )
+                toolTypeData -> {
+                    font.getData().setScale(toolTypeData.scaleX, toolTypeData.scaleY);
+                    font.draw(
+                        spriteBatch, toolTypeData.msg,
+                        toolTypeData.x,
+                        toolTypeData.y);
+                }
+
             );
 
-            if(v instanceof Customer) {
+            if (v instanceof Customer) {
                 Customer customer = (Customer) v;
 
                 Sprite a = customer.getMoodIcon();
 
-                if(a != null) {
+                if (a != null) {
 
                     a.draw(spriteBatch);
 
@@ -329,15 +332,19 @@ public class FirstScreen implements Screen {
 
         obstacleMap.values()
             .forEach(v -> {
-                if(v.getOverLay().isPresent()) {
+                if (v.getOverLay().isPresent()) {
                     v.getOverLay().get().draw(spriteBatch);
                 }
             });
-            //.forEach(v -> v.getOverLay().ifPresent(s -> s.draw(spriteBatch)));
+        //.forEach(v -> v.getOverLay().ifPresent(s -> s.draw(spriteBatch)));
 
-        font.draw(spriteBatch, "day time left: " + dayTimeLeft, 100, 80);
-        font.draw(spriteBatch, "today order: " + day.orderForDay, 100, 100);
-        font.draw(spriteBatch, "Day: " + day.count, 100, 120);
+
+        float winWidth = Gdx.graphics.getWidth();
+        float winHeight = Gdx.graphics.getHeight();
+
+        font.draw(spriteBatch, "day time left: " + dayTimeLeft, winWidth / 7, 60);
+        font.draw(spriteBatch, "Day: " + day.count, (winWidth / 2) - 30, 60);
+        font.draw(spriteBatch, "Favor : " + Main.ecomonics.getBubbleFavor() + " / " + Main.favorDemand, (winWidth / 7) * 4 + 40, 60);
 
         spriteBatch.end();
     }
@@ -361,7 +368,7 @@ public class FirstScreen implements Screen {
                     // ToDo add type check
                     //entity.interactBed((Bed) obstacle);
                     obstacle.interact(entity);
-                    if(obstacle instanceof Bed && entity instanceof Player) {
+                    if (obstacle instanceof Bed && entity instanceof Player) {
                         Player a = (Player) entity;
                         a.setToolType(Player.toolTypeEnum.Clean);
                     }
