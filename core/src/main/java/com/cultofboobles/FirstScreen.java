@@ -169,6 +169,11 @@ public class FirstScreen implements Screen {
         // This method is called when another screen replaces this one.
         music.stop();
 
+        getBedList().forEach(b -> {
+            b.setEmpty(true);
+            b.setEmpty(true);
+        });
+
     }
 
     @Override
@@ -344,7 +349,9 @@ public class FirstScreen implements Screen {
 
         font.draw(spriteBatch, "day time left: " + dayTimeLeft, winWidth / 7, 60);
         font.draw(spriteBatch, "Day: " + day.count, (winWidth / 2) - 30, 60);
-        font.draw(spriteBatch, "Favor : " + Main.ecomonics.getBubbleFavor() + " / " + Main.favorDemand, (winWidth / 7) * 4 + 40, 60);
+
+        font.draw(spriteBatch, "Favor : " + Main.ecomonics.getBubbleFavor() + " / " + Main.favorDemand, (winWidth / 7) * 4 + 40, 80);
+        font.draw(spriteBatch, "Coins : " + Main.ecomonics.getMoneyCount(), (winWidth / 7) * 4 + 40, 45);
 
         spriteBatch.end();
     }

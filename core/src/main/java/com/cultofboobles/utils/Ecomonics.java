@@ -12,6 +12,12 @@ public class Ecomonics {
 
     }
 
+    public void reset() {
+        moneyCount = 10;
+        soap = 10;
+        bubbleFavor = 10;
+    }
+
     public int getMoneyCount() {
         return this.moneyCount;
     }

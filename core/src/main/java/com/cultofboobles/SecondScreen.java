@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.cultofboobles.entity.ToolTypeData;
 import com.cultofboobles.utils.SoundHandler;
 import com.cultofboobles.utils.day.Day;
@@ -37,28 +36,33 @@ public class SecondScreen implements Screen {
 
     @Override
     public void show() {
-        Main.favorDemand += (20 * Main.currentDay);
+        if (endOfRun()) {
+            viewStuffHandler = new ViewStuffHandler("TempleGameOver");
 
-        if(endOfRun()) {
-            viewStuffHandler = new ViewStuffHandler("TempleTop");
-
-        } else {
-            System.out.println("game go on");
-            viewStuffHandler = new ViewStuffHandler("TempleTop");
-        }
-
-        //SoundHandler.playIntro = false; //ToDo put this out
-        if (SoundHandler.playIntro) {
-            intro = SoundHandler.getIntro();
+            intro = SoundHandler.getEnd();
             music = SoundHandler.getBubelFaded();//SoundHandler.getBetweenDayMusic();
             music.loop(0.3f);
             SoundHandler.playIntro = false;
             intro.play();
-        } else {
 
-            music = SoundHandler.getBetweenDayMusic();
-            music.loop(0.3f);
+
+        } else {
+            System.out.println("game go on");
+            viewStuffHandler = new ViewStuffHandler("TempleTop");
+            //SoundHandler.playIntro = false; //ToDo put this out
+            if (SoundHandler.playIntro) {
+                intro = SoundHandler.getIntro();
+                music = SoundHandler.getBubelFaded();//SoundHandler.getBetweenDayMusic();
+                music.loop(0.3f);
+                SoundHandler.playIntro = false;
+                intro.play();
+            } else {
+                music = SoundHandler.getBetweenDayMusic();
+                music.loop(0.3f);
+            }
         }
+
+
         spriteBatch = new SpriteBatch();
 
 //        stage = new Stage(new ScreenViewport());
@@ -79,8 +83,16 @@ public class SecondScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (Gdx.input.isKeyPressed(Input.Keys.N)) {
-            Main.currentDay += 1;
-            //Main.agame.setScreen(new SecondScreen(agame));
+            if (endOfRun()) {
+                Main.favorDemand = 10;
+                Main.currentDay = 1;
+                Main.ecomonics.reset();
+            } else {
+                Main.currentDay += 1;
+            }
+
+            // each day + 25% from day before demand
+            Main.favorDemand +=  (Main.favorDemand * 1.25f);// * Main.currentDay); //(20 * Main.currentDay);
             Main.agame.setScreen(new FirstScreen(agame, DayGenerator.getDay(Main.currentDay)));
         }
 
@@ -88,12 +100,14 @@ public class SecondScreen implements Screen {
 
         float winWidth = Gdx.graphics.getWidth();
         float winHeight = Gdx.graphics.getHeight();
+        uiStuffList.add(new ToolTypeData("Day: " + Main.currentDay, winWidth / 2 - 80, 60, 2, 2));
+        uiStuffList.add(new ToolTypeData("Coin balance: " + Main.ecomonics.getMoneyCount(), winWidth / 8, 40));
+        uiStuffList.add(new ToolTypeData("Favor balance: " + Main.ecomonics.getBubbleFavor() + " / " + Main.favorDemand, (winWidth / 8) * 5, 40));
 
-        uiStuffList.add(new ToolTypeData("Day: " + Main.currentDay, winWidth/2 - 80, 60, 2, 2));
-        uiStuffList.add(new ToolTypeData("Coin balance: " + Main.ecomonics.getMoneyCount(), winWidth/8, 40));
-        uiStuffList.add(new ToolTypeData("Favor balance: " + Main.ecomonics.getBubbleFavor() + " / " + Main.favorDemand, (winWidth/8)*5, 40));
-
-        uiStuffList.add(new ToolTypeData("press N to start", winWidth/2 - 110, winHeight/2));
+        if (endOfRun()) {
+            uiStuffList.add(new ToolTypeData("GAME OVER", winWidth / 2 - 130, winHeight / 2 + 40, 1.5f, 1.5f));
+        }
+        uiStuffList.add(new ToolTypeData("press N to start", winWidth / 2 - 110, winHeight / 2));
 
 
         spriteBatch.begin();
@@ -131,7 +145,7 @@ public class SecondScreen implements Screen {
     @Override
     public void hide() {
         System.out.println("hide");
-        if(intro != null) {
+        if (intro != null) {
             intro.stop();
         }
         music.stop();
