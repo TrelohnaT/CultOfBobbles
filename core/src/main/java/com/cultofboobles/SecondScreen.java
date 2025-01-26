@@ -91,8 +91,8 @@ public class SecondScreen implements Screen {
                 Main.currentDay += 1;
             }
 
-            // each day + 25% from day before demand
-            Main.favorDemand +=  (Main.favorDemand * 1.25f);// * Main.currentDay); //(20 * Main.currentDay);
+            // each day + 10% from day before demand
+            Main.favorDemand +=  (Main.favorDemand * 1.1f);// * Main.currentDay); //(20 * Main.currentDay);
             Main.agame.setScreen(new FirstScreen(agame, DayGenerator.getDay(Main.currentDay)));
         }
 
