@@ -1,14 +1,13 @@
 package com.cultofboobles.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.Main;
 import com.cultofboobles.obstacle.Bed;
 import com.cultofboobles.utils.AtlasHandler;
-import com.cultofboobles.utils.Ecomonics;
+import com.cultofboobles.utils.SoundHandler;
 import com.cultofboobles.utils.Utils;
 
 import java.util.List;
@@ -39,7 +38,9 @@ public class Customer implements Entity {
 
     private boolean doomed = false;
 
-    private float cleaningProgress = 0;
+    private float cleaningProgress = -1;
+
+    private float sacrificeProgress = -1;
 
     public Customer(
         String id,
@@ -84,11 +85,14 @@ public class Customer implements Entity {
     public Sprite getSprite() {
         Sprite tmp;
         if (state.equals(visitStates.Leaving)) {
-            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_WalkBack"));;
+            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_WalkBack"));
+            ;
         } else if (state.equals(visitStates.InBed)) {
-            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_Lying"));;
+            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_Lying"));
+            ;
         } else {
-            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_WalkFront"));;
+            tmp = new Sprite(AtlasHandler.customer.findRegion("CustomerGinger_WalkFront"));
+            ;
         }
 
         tmp.translateX(this.x);// - tmp.getWidth() / 2);
@@ -100,15 +104,15 @@ public class Customer implements Entity {
 
     public Sprite getMoodIcon() {
         Sprite tmp;
-        if(mood.equals(happinessStates.Happy)) {
+        if (mood.equals(happinessStates.Happy)) {
             tmp = new Sprite(AtlasHandler.customer.findRegion("SmileyFace"));
             tmp.translateX(this.x + 8);
-            tmp.translateY(this.y  + 55);
+            tmp.translateY(this.y + 55);
 
-        } else if(mood.equals(happinessStates.UnHappy)) {
+        } else if (mood.equals(happinessStates.UnHappy)) {
             tmp = new Sprite(AtlasHandler.customer.findRegion("FrownFace"));
             tmp.translateX(this.x + 8);
-            tmp.translateY(this.y  + 55);
+            tmp.translateY(this.y + 55);
 
         } else {
             tmp = null;
@@ -164,17 +168,17 @@ public class Customer implements Entity {
                 this.x -= speed * Gdx.graphics.getDeltaTime();
             }
         } else if (state.equals(visitStates.InBed)) {
-            if (Main.timeElapsed - this.timeEnteringBed > Utils.getRandom(5, 15)) {
+            if (Main.timeElapsed - this.timeEnteringBed > Utils.getRandom(8, 15)) {
                 state = visitStates.Leaving;
                 this.bed.setEmpty(true);
                 this.bed.setFree(true);
                 this.x = this.beforeBedX + 5;
                 this.y = this.beforeBedY;
 
-                if(amICleaned()) {
+                if (amICleaned()) {
                     this.mood = happinessStates.Happy;
-                        Main.ecomonics.addToMoney(10);
-                        Main.ecomonics.addSoap(-5);
+                    Main.ecomonics.addToMoney(10);
+                    Main.ecomonics.addSoap(-5);
 
                     System.out.println(this.id + " is happy");
                 } else {
@@ -205,6 +209,10 @@ public class Customer implements Entity {
         return this.doomed;
     }
 
+    public void setDoomed(boolean value) {
+        this.doomed = value;
+    }
+
     @Override
     public void load() {
 
@@ -217,7 +225,7 @@ public class Customer implements Entity {
 
     public boolean increaseCleanProgress() {
 
-        if((this.cleaningProgress + 0.5f) < 100) {
+        if ((this.cleaningProgress + 0.5f) < 100) {
             this.cleaningProgress += 0.5f;
         }
         //return Optional.of(new Sprite(AtlasHandler.obstacle.findRegions("Bubbles").get((int) this.cleaningProgress / 10)));
@@ -225,11 +233,40 @@ public class Customer implements Entity {
 
     }
 
-    public Sprite getOverlayBasedOnCleanProgress() {
-        return new Sprite(AtlasHandler.obstacle.findRegions("Bubbles").get((int) this.cleaningProgress / 10));
+
+    public boolean progressSacrificion() {
+        System.out.println(sacrificeProgress);
+        if(sacrificeProgress == -1) {
+            Sound sacrificePop = SoundHandler.getSacrificePop();
+            sacrificePop.play();
+        }
+        if (sacrificeProgress < 4) {
+            sacrificeProgress += 0.05f;
+            return false;
+        } else {
+            this.doomed = true;
+            return true;
+        }
     }
 
-    private boolean amICleaned() {
+    public Sprite getOverlaySacrifice() {
+        if (sacrificeProgress == -1) {
+            return new Sprite(AtlasHandler.obstacle.findRegions("Bubbles").get(9));
+        } else {
+            return new Sprite(AtlasHandler.obstacle.findRegions("BubbleSacrifice").get((int) sacrificeProgress));
+        }
+    }
+
+    public Sprite getOverlayBasedOnCleanProgress() {
+        if (cleaningProgress == -1) {
+            return new Sprite(AtlasHandler.obstacle.findRegion("Empty"));
+        } else {
+            return new Sprite(AtlasHandler.obstacle.findRegions("Bubbles").get((int) this.cleaningProgress / 10));
+        }
+    }
+
+
+    public boolean amICleaned() {
         return this.cleaningProgress >= 90;
     }
 

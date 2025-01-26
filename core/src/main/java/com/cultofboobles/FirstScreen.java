@@ -3,6 +3,7 @@ package com.cultofboobles;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,6 +21,7 @@ import com.cultofboobles.obstacle.Obstacle;
 import com.cultofboobles.obstacle.ObstacleFactory;
 import com.cultofboobles.ui.UiHandler;
 import com.cultofboobles.utils.HitBox;
+import com.cultofboobles.utils.SoundHandler;
 import com.cultofboobles.utils.Utils;
 import com.cultofboobles.utils.day.Day;
 import com.cultofboobles.view.ViewStuffHandler;
@@ -51,6 +53,8 @@ public class FirstScreen implements Screen {
 
     private List<String> doomedList = new LinkedList<>();
 
+    private Sound music;
+
     public FirstScreen(Game agame, Day day) {
         this.agame = agame;
         this.day = day;
@@ -69,6 +73,8 @@ public class FirstScreen implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
+        this.music = SoundHandler.getWorkDayMusic();
+        music.loop(0.3f);
         stage.addActor(uiHandler.getUi());
         // to see borders of UI elements
         //stage.setDebugAll(true);
@@ -103,7 +109,7 @@ public class FirstScreen implements Screen {
         Main.timeElapsed += delta;
         dayTimeLeft = (int) (day.duration - (Main.timeElapsed - dayStart));
         if (dayTimeLeft < 0) {
-            agame.setScreen(new SecondScreen(agame));
+            Main.agame.setScreen(new SecondScreen(agame));
         }
 
         Entity player = entityMap.get("player");
@@ -141,6 +147,7 @@ public class FirstScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        System.out.println("resize 1 " + width + " " + height);
         // Resize your screen here. The parameters represent the new window size.
         viewStuffHandler.resize(width, height);
         //stage.getViewport().update(width, height, true);
@@ -160,11 +167,14 @@ public class FirstScreen implements Screen {
     @Override
     public void hide() {
         // This method is called when another screen replaces this one.
+        music.stop();
+
     }
 
     @Override
     public void dispose() {
         // Destroy screen's assets here.
+        System.out.println("disposed called");
     }
 
     private void prepareEntities() {

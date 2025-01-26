@@ -141,7 +141,7 @@ public class Player implements Entity {
     @Override
     public Optional<ToolTypeData> getToolType() {
         if(toolType.equals(toolTypeEnum.Clean)) {
-             return Optional.of(new ToolTypeData("E", this.x - 5, this.y + getHitBox().height - 10));
+             return Optional.of(new ToolTypeData("E / Q", this.x - 5, this.y + getHitBox().height - 10));
         }
         return Optional.empty();
     }
@@ -195,7 +195,8 @@ public class Player implements Entity {
 
     public enum toolTypeEnum {
         None,
-        Clean
+        Clean,
+        Sacrifice
     }
 
     public enum currentAnimationEnum {

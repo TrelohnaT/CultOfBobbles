@@ -43,6 +43,7 @@ public class ViewStuffHandler {
     }
 
     public void resize(int width, int height) {
+
         viewport.update(width, height, true);
         viewport.setWorldSize(width, height);
         //viewport.setCamera(new OrthographicCamera(width, height));
@@ -50,7 +51,7 @@ public class ViewStuffHandler {
         //actualViewPort.setSize(width,height);
         //actualViewPort.setWidth(Gdx.graphics.getWidth());
 
-        camera.zoom = viewPortX/width;
+        camera.zoom = this.viewPortX/width;
 
 //        moveCamera(
 //            viewPortX / 2,

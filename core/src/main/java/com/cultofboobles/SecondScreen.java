@@ -4,11 +4,11 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.cultofboobles.entity.ToolTypeData;
 import com.cultofboobles.utils.SoundHandler;
@@ -26,9 +26,9 @@ public class SecondScreen implements Screen {
 
     private BitmapFont font;
     private SpriteBatch spriteBatch;
-    private Stage stage;
     private Skin skin;
-
+    private Sound intro;
+    private Sound music;
 
     public SecondScreen(Game agame) {
         this.agame = agame;
@@ -38,8 +38,17 @@ public class SecondScreen implements Screen {
 
     @Override
     public void show() {
-        if(SoundHandler.playIntro) {
-            SoundHandler.getIntro().play();
+        //SoundHandler.playIntro = false; //ToDo put this out
+        if (SoundHandler.playIntro) {
+            intro = SoundHandler.getIntro();
+            music = SoundHandler.getBubelFaded();//SoundHandler.getBetweenDayMusic();
+            music.loop(0.3f);
+            SoundHandler.playIntro = false;
+            intro.play();
+        } else {
+
+            music = SoundHandler.getBetweenDayMusic();
+            music.loop(0.3f);
         }
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         spriteBatch = new SpriteBatch();
@@ -64,27 +73,27 @@ public class SecondScreen implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.N)) {
             Main.currentDay += 1;
-            agame.setScreen(new FirstScreen(agame, DayGenerator.getDay(Main.currentDay)));
+            //Main.agame.setScreen(new SecondScreen(agame));
+            Main.agame.setScreen(new FirstScreen(agame, DayGenerator.getDay(Main.currentDay)));
         }
 
         List<ToolTypeData> uiStuffList = new LinkedList<>();
 
 
-
         uiStuffList.add(new ToolTypeData("Day: " + Main.currentDay, 400, 500, 3, 3));
-        uiStuffList.add(new ToolTypeData("Coin balance: " + Main.ecomonics.getMoneyCount(), 200, 450, 2,2));
+        uiStuffList.add(new ToolTypeData("Coin balance: " + Main.ecomonics.getMoneyCount(), 200, 450, 2, 2));
 
-        uiStuffList.add(new ToolTypeData("Coin Soap: " + Main.ecomonics.getSoap() + " buy more Soap by pressing: Q", 200, 400, 2,2));
-        uiStuffList.add(new ToolTypeData("shoping is not working, fix it", 200, 350, 2,2));
+        uiStuffList.add(new ToolTypeData("Coin Soap: " + Main.ecomonics.getSoap() + " buy more Soap by pressing: Q", 200, 400, 2, 2));
+        uiStuffList.add(new ToolTypeData("shoping is not working, fix it", 200, 350, 2, 2));
 
-        uiStuffList.add(new ToolTypeData("Start play by pressing: N", 100, 100, 2,2));
+        uiStuffList.add(new ToolTypeData("Start play by pressing: N", 100, 100, 2, 2));
 
 
         spriteBatch.begin();
         viewStuffHandler.background.draw(spriteBatch);
         spriteBatch.setColor(new Color(1, 0, 0, 0));
-        for(ToolTypeData uiStuff : uiStuffList) {
-            font.getData().setScale(uiStuff.scaleX,uiStuff.scaleY);
+        for (ToolTypeData uiStuff : uiStuffList) {
+            font.getData().setScale(uiStuff.scaleX, uiStuff.scaleY);
             font.draw(spriteBatch, uiStuff.msg, uiStuff.x, uiStuff.y);
         }
 
@@ -97,7 +106,9 @@ public class SecondScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewStuffHandler.resize(width, height);
+        System.out.println("resize 2 " + width + " " + height);
+        viewStuffHandler.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
     }
 
     @Override
@@ -112,12 +123,20 @@ public class SecondScreen implements Screen {
 
     @Override
     public void hide() {
-
+        System.out.println("hide");
+        skin.dispose();
+        if(intro != null) {
+            intro.stop();
+        }
+        music.stop();
     }
 
     @Override
     public void dispose() {
+        System.out.println("dispose");
         skin.dispose();
+        intro.stop();
+        music.stop();
     }
 
     private void switchToFirstScreen() {
