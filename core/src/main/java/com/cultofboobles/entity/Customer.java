@@ -224,7 +224,10 @@ public class Customer implements Entity {
     }
 
     public boolean increaseCleanProgress() {
-
+        if( this.cleaningProgress == -1 ) {
+            Sound cleaningSound = SoundHandler.getCleaning();
+            cleaningSound.play();
+        }
         if ((this.cleaningProgress + 0.5f) < 100) {
             this.cleaningProgress += 0.5f;
         }

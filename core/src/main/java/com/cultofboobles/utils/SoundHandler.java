@@ -37,4 +37,8 @@ public class SoundHandler {
         return Gdx.audio.newSound(Gdx.files.internal("sound/effects/Sacrifice bubble pop.wav"));
     }
 
+    public static Sound getCleaning() {
+        return Gdx.audio.newSound(Gdx.files.internal("sound/effects/cleaning sound - Stereo Out.mp3"));
+    }
+
 }

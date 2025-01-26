@@ -32,6 +32,8 @@ public class Player implements Entity {
     private final Animation<TextureRegion> walkFront;
     private final Animation<TextureRegion> idleFront;
     private final Animation<TextureRegion> idleBack;
+    private final Animation<TextureRegion> cleaning;
+    private final Animation<TextureRegion> sacrifice;
 
     private boolean isFacingLeft = false;
     private boolean isFacingBack = false;
@@ -60,7 +62,8 @@ public class Player implements Entity {
         this.walkFront = new Animation<>(animationSpeed/4, atlas.findRegions("MainCharacter_WalkFront"));
         this.idleFront = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_IdleFront"));
         this.idleBack = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_IdleBack"));
-
+        this.cleaning = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_Cleaning"));
+        this.sacrifice = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_Sacrifice"));
 
     }
 
@@ -128,6 +131,13 @@ public class Player implements Entity {
                 tmp = new Sprite(walkFront.getKeyFrame(Main.timeElapsed, true));
             }
         }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.E)) {
+            tmp = new Sprite(cleaning.getKeyFrame(Main.timeElapsed, true));
+        } else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            tmp = new Sprite(sacrifice.getKeyFrame(Main.timeElapsed, true));
+        }
+
         if(!isFacingLeft) {
             tmp.flip(true, false);
         }
@@ -201,7 +211,8 @@ public class Player implements Entity {
 
     public enum currentAnimationEnum {
         Idle,
-        Walk
+        Walk,
+        Cleaning
     }
 
 }
