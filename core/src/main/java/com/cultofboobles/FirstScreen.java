@@ -12,10 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.cultofboobles.entity.Customer;
-import com.cultofboobles.entity.Entity;
-import com.cultofboobles.entity.EntityFactory;
-import com.cultofboobles.entity.Player;
+import com.cultofboobles.entity.*;
 import com.cultofboobles.obstacle.Bed;
 import com.cultofboobles.obstacle.Obstacle;
 import com.cultofboobles.obstacle.ObstacleFactory;
@@ -347,11 +344,21 @@ public class FirstScreen implements Screen {
         float winWidth = Gdx.graphics.getWidth();
         float winHeight = Gdx.graphics.getHeight();
 
-        font.draw(spriteBatch, "day time left: " + dayTimeLeft, winWidth / 7, 60);
-        font.draw(spriteBatch, "Day: " + day.count, (winWidth / 2) - 30, 60);
 
-        font.draw(spriteBatch, "Favor : " + Main.ecomonics.getBubbleFavor() + " / " + Main.favorDemand, (winWidth / 7) * 4 + 40, 80);
-        font.draw(spriteBatch, "Coins : " + Main.ecomonics.getMoneyCount(), (winWidth / 7) * 4 + 40, 45);
+        List<ToolTypeData> uiStuffList = new LinkedList<>();
+
+        uiStuffList.add(new ToolTypeData("day time left: " + dayTimeLeft, winWidth / 7, 60));
+        uiStuffList.add(new ToolTypeData("Day: " + Main.currentDay, winWidth / 2 - 80, 60, 2, 2));
+        //font.draw(spriteBatch, "Day: " + day.count, (winWidth / 2) - 30, 60);
+
+        uiStuffList.add(new ToolTypeData("Favor : " + Main.ecomonics.getBubbleFavor() + " / " + Main.favorDemand, (winWidth / 7) * 4 + 40, 80));
+        uiStuffList.add(new ToolTypeData("Coins : " + Main.ecomonics.getMoneyCount(), (winWidth / 7) * 4 + 40, 45));
+
+        spriteBatch.setColor(new Color(1, 0, 0, 0));
+        for (ToolTypeData uiStuff : uiStuffList) {
+            font.getData().setScale(uiStuff.scaleX, uiStuff.scaleY);
+            font.draw(spriteBatch, uiStuff.msg, uiStuff.x, uiStuff.y);
+        }
 
         spriteBatch.end();
     }

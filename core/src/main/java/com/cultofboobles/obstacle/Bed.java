@@ -62,9 +62,9 @@ public class Bed implements Obstacle {
                 "",
                 HitBox.types.EnterAble,
                 new Rectangle(
-                    x - sprite.getWidth() / 2,
+                    x - sprite.getWidth() / 2 + 15,
                     y - sprite.getHeight() / 2,
-                    sprite.getWidth() * 2,
+                    sprite.getWidth() * 2 - 30,
                     sprite.getHeight() * 2
                 )
             )
@@ -118,9 +118,9 @@ public class Bed implements Obstacle {
                 } else {
                     System.out.println("wait for customer");
                 }
-            } else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
-                if(!this.empty) {
-                    if(customer.amICleaned()) {
+            } else if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+                if (!this.empty) {
+                    if (customer.amICleaned()) {
                         if (customer.progressSacrificion()) {
                             this.empty = true;
                             this.free = true;
@@ -134,11 +134,11 @@ public class Bed implements Obstacle {
 
     @Override
     public Optional<Sprite> getOverLay() {
-        if(this.empty) {
+        if (this.empty) {
             return Optional.of(new Sprite(AtlasHandler.obstacle.findRegion("Empty")));
         }
 
-        if(customer.amICleaned()) {
+        if (customer.amICleaned()) {
             Sprite tmp = customer.getOverlaySacrifice();
             tmp.translate(x, y);
             return Optional.of(tmp);

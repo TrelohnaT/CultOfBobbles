@@ -31,6 +31,7 @@ public class Player implements Entity {
 
     private final Animation<TextureRegion> walkFront;
     private final Animation<TextureRegion> idleFront;
+    private final Animation<TextureRegion> walkBack;
     private final Animation<TextureRegion> idleBack;
     private final Animation<TextureRegion> cleaning;
     private final Animation<TextureRegion> sacrifice;
@@ -61,6 +62,7 @@ public class Player implements Entity {
 
         this.walkFront = new Animation<>(animationSpeed/4, atlas.findRegions("MainCharacter_WalkFront"));
         this.idleFront = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_IdleFront"));
+        this.walkBack = new Animation<>(animationSpeed/4, atlas.findRegions("MainCharacter_WalkBack"));
         this.idleBack = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_IdleBack"));
         this.cleaning = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_Cleaning"));
         this.sacrifice = new Animation<>(animationSpeed, atlas.findRegions("MainCharacter_Sacrifice"));
@@ -79,6 +81,7 @@ public class Player implements Entity {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             this.y += this.speed * deltaTime;
             isFacingBack = true;
+            currentAnimation = currentAnimationEnum.Walk;
             idle = false;
         } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             this.y += this.speed * deltaTime * (-1);
@@ -123,7 +126,11 @@ public class Player implements Entity {
     public Sprite getSprite() {
         Sprite tmp;
         if(isFacingBack) {
+            if(currentAnimation.equals(currentAnimationEnum.Idle)) {
                 tmp = new Sprite(idleBack.getKeyFrame(Main.timeElapsed, true));
+            } else {
+                tmp = new Sprite(walkBack.getKeyFrame(Main.timeElapsed, true));
+            }
         } else {
             if(currentAnimation.equals(currentAnimationEnum.Idle)) {
                 tmp = new Sprite(idleFront.getKeyFrame(Main.timeElapsed, true));
