@@ -167,8 +167,9 @@ public class FirstScreen implements Screen {
         music.stop();
 
         getBedList().forEach(b -> {
+            b.setFree(true);
             b.setEmpty(true);
-            b.setEmpty(true);
+            b.deleteCustomer();
         });
 
     }
@@ -304,16 +305,17 @@ public class FirstScreen implements Screen {
         entityMap.values().forEach(v -> {
             v.getSprite().draw(spriteBatch);
 
-            v.getToolType().ifPresent(
-                toolTypeData -> {
-                    font.getData().setScale(toolTypeData.scaleX, toolTypeData.scaleY);
-                    font.draw(
-                        spriteBatch, toolTypeData.msg,
-                        toolTypeData.x,
-                        toolTypeData.y);
-                }
+            if (v.getToolType().isPresent()) {
+                font.setColor(v.getToolType().get().color);
+                font.getData().setScale(v.getToolType().get().scaleX, v.getToolType().get().scaleY);
+                font.draw(
+                    spriteBatch, v.getToolType().get().msg,
+                    v.getToolType().get().x,
+                    v.getToolType().get().y);
+                font.setColor(new Color(1, 1, 1, 1));
 
-            );
+            }
+
 
             if (v instanceof Customer) {
                 Customer customer = (Customer) v;
@@ -384,7 +386,15 @@ public class FirstScreen implements Screen {
                     obstacle.interact(entity);
                     if (obstacle instanceof Bed && entity instanceof Player) {
                         Player a = (Player) entity;
-                        a.setToolType(Player.toolTypeEnum.Clean);
+                        Bed bed = (Bed) obstacle;
+
+                        if (!bed.isPersonCleaned()) {
+                            a.setToolType(Player.toolTypeEnum.Clean);
+                        } else {
+                            a.setToolType(Player.toolTypeEnum.Sacrifice);
+
+                        }
+
                     }
 
                 }

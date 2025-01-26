@@ -2,6 +2,7 @@ package com.cultofboobles.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Rectangle;
 import com.cultofboobles.Main;
@@ -57,7 +58,7 @@ public class Player implements Entity {
         this.y = y;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY);
+        this.hitBox = new Rectangle(x - this.sizeX / 2, y - this.sizeY / 2, this.sizeX, this.sizeY - 10);
         this.atlas = new TextureAtlas(atlasPath);
 
         this.walkFront = new Animation<>(animationSpeed/4, atlas.findRegions("MainCharacter_WalkFront"));
@@ -158,7 +159,9 @@ public class Player implements Entity {
     @Override
     public Optional<ToolTypeData> getToolType() {
         if(toolType.equals(toolTypeEnum.Clean)) {
-             return Optional.of(new ToolTypeData("E / Q", this.x - 20, this.y + getHitBox().height - 10, 0.75f, 0.75f));
+             return Optional.of(new ToolTypeData("Hold: E", this.x - 30, this.y + getHitBox().height, 0.75f, 0.75f, new Color(1,1,1,1)));
+        } else if(toolType.equals(toolTypeEnum.Sacrifice)) {
+            return Optional.of(new ToolTypeData("Hold: Q", this.x - 30, this.y + getHitBox().height, 0.75f, 0.75f, new Color(0.86f,0.07f,0.21f,1)));
         }
         return Optional.empty();
     }

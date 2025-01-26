@@ -172,6 +172,7 @@ public class Customer implements Entity {
                 state = visitStates.Leaving;
                 this.bed.setEmpty(true);
                 this.bed.setFree(true);
+                this.bed.deleteCustomer();
                 this.x = this.beforeBedX + 5;
                 this.y = this.beforeBedY;
 

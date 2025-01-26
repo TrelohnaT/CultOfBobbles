@@ -62,9 +62,9 @@ public class Bed implements Obstacle {
                 "",
                 HitBox.types.EnterAble,
                 new Rectangle(
-                    x - sprite.getWidth() / 2 + 15,
+                    x - sprite.getWidth() / 2 + 5,
                     y - sprite.getHeight() / 2,
-                    sprite.getWidth() * 2 - 30,
+                    sprite.getWidth() * 2 - 10,
                     sprite.getHeight() * 2
                 )
             )
@@ -124,7 +124,7 @@ public class Bed implements Obstacle {
                         if (customer.progressSacrificion()) {
                             this.empty = true;
                             this.free = true;
-                            //this.customer = null;
+                            this.customer = null;
                         }
                     }
                 }
@@ -169,6 +169,17 @@ public class Bed implements Obstacle {
 
     public boolean isEmpty() {
         return this.empty;
+    }
+
+    public void deleteCustomer() {
+        customer = null;
+    }
+
+    public boolean isPersonCleaned() {
+        if(customer == null) {
+            return false;
+        }
+        return this.customer.amICleaned();
     }
 
 }
