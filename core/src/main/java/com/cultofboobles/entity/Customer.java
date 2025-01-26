@@ -107,12 +107,14 @@ public class Customer implements Entity {
         if (mood.equals(happinessStates.Happy)) {
             tmp = new Sprite(AtlasHandler.customer.findRegion("SmileyFace"));
             tmp.translateX(this.x + 8);
-            tmp.translateY(this.y + 55);
+            tmp.translateY(this.y + 65);
+            tmp.setScale(1.15f);
 
         } else if (mood.equals(happinessStates.UnHappy)) {
             tmp = new Sprite(AtlasHandler.customer.findRegion("FrownFace"));
             tmp.translateX(this.x + 8);
-            tmp.translateY(this.y + 55);
+            tmp.translateY(this.y + 65);
+            tmp.setScale(1.15f);
 
         } else {
             tmp = null;

@@ -22,7 +22,7 @@ public class DayGenerator {
 
     public static Day getDay(int count) {
 
-        int customerCount = 4 + (count * 5);
+        int customerCount = 5 + (count * 5);
         String orderName = "";
         for (int i = 0; i < 100; i++) {
             int randomNum = Utils.getRandom(0, allOrders.size());

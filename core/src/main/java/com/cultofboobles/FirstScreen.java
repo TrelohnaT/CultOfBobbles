@@ -70,6 +70,7 @@ public class FirstScreen implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
+        EntityFactory.customerCount = 0;
         this.music = SoundHandler.getWorkDayMusic();
         music.loop(0.3f);
         stage.addActor(uiHandler.getUi());
@@ -94,6 +95,23 @@ public class FirstScreen implements Screen {
                 "bed2",
                 170,
                 150
+            )
+        );
+        obstacleMap.put(
+            "bed3",
+            ObstacleFactory.makeBed(
+                "bed3",
+                270,
+                150
+            )
+        );
+
+        obstacleMap.put(
+            "bed4",
+            ObstacleFactory.makeBed(
+                "bed4",
+                270,
+                350
             )
         );
 
@@ -165,7 +183,7 @@ public class FirstScreen implements Screen {
     public void hide() {
         // This method is called when another screen replaces this one.
         music.stop();
-
+        System.out.println("hide");
         getBedList().forEach(b -> {
             b.setFree(true);
             b.setEmpty(true);
