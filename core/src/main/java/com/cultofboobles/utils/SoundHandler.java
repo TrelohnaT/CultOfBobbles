@@ -41,4 +41,12 @@ public class SoundHandler {
         return Gdx.audio.newSound(Gdx.files.internal("sound/effects/cleaning sound - Stereo Out.mp3"));
     }
 
+    public static Sound getChaching() {
+        return Gdx.audio.newSound(Gdx.files.internal("sound/effects/chaching - Stereo Out.mp3"));
+    }
+
+    public static Sound getAngry() {
+        return Gdx.audio.newSound(Gdx.files.internal("sound/effects/angry - Stereo Out.mp3"));
+    }
+
 }

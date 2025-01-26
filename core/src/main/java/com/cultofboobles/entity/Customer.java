@@ -182,8 +182,14 @@ public class Customer implements Entity {
                     Main.ecomonics.addSoap(-5);
 
                     System.out.println(this.id + " is happy");
+
+                    Sound chaching = SoundHandler.getChaching();
+                    chaching.play();
+
                 } else {
                     this.mood = happinessStates.UnHappy;
+                    Sound angry = SoundHandler.getAngry();
+                    angry.play();
                     System.out.println(this.id + " is unhappy");
                 }
 
