@@ -32,7 +32,7 @@ public class SecondScreen implements Screen {
 
     public SecondScreen(Game agame) {
         this.agame = agame;
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("font/Tin5-Regular.fnt"));
         font.setColor(0, 0, 0, 1);
     }
 
@@ -80,13 +80,13 @@ public class SecondScreen implements Screen {
         List<ToolTypeData> uiStuffList = new LinkedList<>();
 
 
-        uiStuffList.add(new ToolTypeData("Day: " + Main.currentDay, 400, 500, 3, 3));
-        uiStuffList.add(new ToolTypeData("Coin balance: " + Main.ecomonics.getMoneyCount(), 200, 450, 2, 2));
+        uiStuffList.add(new ToolTypeData("Day: " + Main.currentDay, 400, 500, 2, 2));
+        uiStuffList.add(new ToolTypeData("Coin balance: " + Main.ecomonics.getMoneyCount(), 200, 450));
 
-        uiStuffList.add(new ToolTypeData("Coin Soap: " + Main.ecomonics.getSoap() + " buy more Soap by pressing: Q", 200, 400, 2, 2));
-        uiStuffList.add(new ToolTypeData("shoping is not working, fix it", 200, 350, 2, 2));
+        uiStuffList.add(new ToolTypeData("Coin Soap: " + Main.ecomonics.getSoap() + " buy more Soap by pressing: Q", 200, 400));
+        uiStuffList.add(new ToolTypeData("shoping is not working, fix it", 200, 350));
 
-        uiStuffList.add(new ToolTypeData("Start play by pressing: N", 100, 100, 2, 2));
+        uiStuffList.add(new ToolTypeData("Start play by pressing: N", 100, 100));
 
 
         spriteBatch.begin();
@@ -133,10 +133,6 @@ public class SecondScreen implements Screen {
 
     @Override
     public void dispose() {
-        System.out.println("dispose");
-        skin.dispose();
-        intro.stop();
-        music.stop();
     }
 
     private void switchToFirstScreen() {
